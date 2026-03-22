@@ -1,78 +1,51 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Rocket } from 'lucide-react';
 
 export default function Inscription() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const router = useRouter();
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Simulation d'inscription
-    router.push('/bienvenue');
-  };
-
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center px-4">
-      <div className="max-w-md w-full">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center px-4">
+      <div className="max-w-2xl w-full text-center">
         <Link
-          href="/"
+          href="/formation"
           className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-8"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
-          Retour
+          Retour à la formation
         </Link>
 
-        <div className="bg-white p-8 rounded-lg shadow-sm border">
-          <h1 className="text-3xl font-bold text-center mb-8">Créer mon compte Formation</h1>
+        <div className="bg-white p-12 rounded-lg shadow-lg border border-gray-100">
+          <div className="mb-6">
+            <Rocket className="w-16 h-16 text-orange-500 mx-auto mb-4" />
+          </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="ton@email.com"
-              />
-            </div>
+          <h1 className="text-4xl font-bold mb-4 text-gray-900">
+            On prépare quelque chose de fou
+          </h1>
 
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                Mot de passe
-              </label>
-              <input
-                type="password"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="••••••••"
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="w-full bg-orange-500 text-white py-3 px-4 rounded-md hover:bg-orange-600 transition-colors font-semibold"
-            >
-              Valider
-            </button>
-          </form>
-
-          <p className="text-sm text-gray-500 text-center mt-6">
-            En créant un compte, vous acceptez nos conditions d&apos;utilisation.
+          <p className="text-xl text-gray-600 mb-8">
+            La formation arrive très bientôt. Elle sera révolutionnaire, complète et faite pour tous les débutants qui veulent créer sans coder.
           </p>
+
+          <p className="text-gray-600 mb-8">
+            En attendant, tu peux nous contacter sur{' '}
+            <a href="mailto:contact@iaco.app" className="text-blue-600 hover:text-blue-800 font-semibold underline">
+              contact@iaco.app
+            </a>
+          </p>
+
+          <Link
+            href="/formation"
+            className="inline-flex items-center justify-center rounded-full bg-orange-500 px-8 py-4 text-lg font-semibold text-white shadow-lg transition hover:bg-orange-600 whitespace-nowrap"
+          >
+            Retour à la landing
+          </Link>
         </div>
+
+        <p className="text-gray-500 text-sm mt-8">
+          Statut : <span className="font-semibold text-orange-600">En construction</span>
+        </p>
       </div>
     </div>
   );

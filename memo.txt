@@ -1,0 +1,26 @@
+local:
+------
+wsl
+cd /home/eloise/iaco
+
+
+# Local
+bash script/deploy.sh
+# Uploader deploy-iaco-app.tgz
+
+site.fr:
+--------
+upload tgz
+cd /home/lgcg11afcd/iaco.app
+rm -rf .next node_modules public server.js package.json messages .env
+
+tar -xzvf deploy-iaco-app.tgz -C .
+
+mkdir tmp
+touch tmp/restart.txt
+
+
+
+la premiere fois: 
+-----------------
+supprimer /home/lgcg11afcd/domains/iaco.app/public_html/index.html

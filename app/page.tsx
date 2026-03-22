@@ -23,6 +23,13 @@ export default function Home() {
           >
             📚 Formation
           </Link>
+
+          <Link
+            href="/facture-electronique"
+            className="px-8 py-4 bg-teal-600 text-white rounded-lg font-semibold hover:bg-teal-700 transition-colors"
+          >
+            🧾 Facture Électronique
+          </Link>
         </div>
 
         <p className="text-sm text-gray-500 mt-12">

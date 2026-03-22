@@ -2,8 +2,9 @@
 
 import { motion } from 'framer-motion';
 import { useInView } from 'framer-motion';
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import Link from 'next/link';
+import { trackLandingView, trackCreateAccountClick } from '@/lib/analytics';
 import { FileText, Search, CheckCircle, Users, TrendingUp, HelpCircle, ArrowRight } from 'lucide-react';
 
 const fadeInUp = {
@@ -20,7 +21,7 @@ const stagger = {
   }
 };
 
-function AnimatedSection({ children, className = "" }) {
+function AnimatedSection({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
@@ -38,6 +39,10 @@ function AnimatedSection({ children, className = "" }) {
 }
 
 export default function Landing1() {
+  useEffect(() => {
+    trackLandingView('landing problem');
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 text-gray-900">
       {/* HERO */}
@@ -45,8 +50,8 @@ export default function Landing1() {
         <div className="pointer-events-none absolute -left-24 -top-24 h-96 w-96 rounded-full bg-indigo-200 opacity-40 blur-3xl"></div>
         <div className="pointer-events-none absolute -right-24 top-32 h-96 w-96 rounded-full bg-orange-200 opacity-40 blur-3xl"></div>
 
-        <div className="relative mx-auto flex max-w-6xl flex-col gap-16 px-4 py-24 lg:flex-row lg:items-center lg:justify-center">
-          <AnimatedSection className="max-w-2xl lg:max-w-xl">
+        <div className="relative mx-auto flex max-w-3xl flex-col px-4 py-24 text-center">
+          <AnimatedSection>
             <motion.h1
               variants={fadeInUp}
               className="text-5xl md:text-6xl font-bold leading-tight tracking-tight text-gray-900"
@@ -63,61 +68,16 @@ export default function Landing1() {
 
             <motion.div
               variants={fadeInUp}
-              className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center"
+              className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-center"
             >
               <Link
                 href="/problemsolver/inscription"
+                onClick={() => trackCreateAccountClick('landing problem')}
                 className="inline-flex items-center justify-center rounded-full bg-orange-500 px-8 py-4 text-lg font-semibold text-white shadow-lg transition hover:bg-orange-600 whitespace-nowrap"
               >
                 Trouver mon premier problème
                 <ArrowRight className="ml-3 h-5 w-5" />
               </Link>
-              <div className="inline-flex items-center justify-center rounded-xl bg-white/70 px-6 py-2 text-lg font-semibold text-gray-700">
-                Pourquoi ça marche
-              </div>
-            </motion.div>
-
-            <motion.div
-              variants={fadeInUp}
-              className="mt-12 grid gap-4 sm:grid-cols-2"
-            >
-              <div className="flex items-start gap-3 rounded-xl bg-white/70 p-5 shadow-sm">
-                <CheckCircle className="h-7 w-7 flex-shrink-0 text-blue-600" />
-                <div>
-                  <p className="font-semibold text-gray-800">Problèmes réels</p>
-                  <p className="text-sm text-gray-600">Basé sur des frustrations postées en ligne (forums, avis, réseaux).</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3 rounded-xl bg-white/70 p-5 shadow-sm">
-                <CheckCircle className="h-7 w-7 flex-shrink-0 text-blue-600" />
-                <div>
-                  <p className="font-semibold text-gray-800">Pas d&apos;idée ? Pas grave</p>
-                  <p className="text-sm text-gray-600">Tu choisis une thématique, on te propose des problèmes triés par potentiel.</p>
-                </div>
-              </div>
-            </motion.div>
-          </AnimatedSection>
-
-          <AnimatedSection className="relative mx-auto w-full max-w-md lg:max-w-xl lg:ml-12">
-            <motion.div
-              variants={fadeInUp}
-              className="rounded-3xl border border-white/40 bg-white/70 p-8 shadow-xl backdrop-blur"
-            >
-              <p className="text-sm font-semibold text-gray-500">Exemple de problèmes trouvés</p>
-              <div className="mt-6 space-y-4">
-                <div className="rounded-2xl border border-gray-200 bg-white p-4">
-                  <p className="font-semibold text-gray-800">Les boutiques locales ne savent pas quand il y a du stock.</p>
-                  <p className="mt-2 text-sm text-gray-600">Clients frustrés parce que les articles sont indiqués disponibles en ligne mais sont épuisés en magasin.</p>
-                </div>
-                <div className="rounded-2xl border border-gray-200 bg-white p-4">
-                  <p className="font-semibold text-gray-800">Les freelancers perdent du temps à relancer des clients.</p>
-                  <p className="mt-2 text-sm text-gray-600">Ils ne savent pas qui est vraiment intéressé et passent des heures à envoyer des messages.</p>
-                </div>
-                <div className="rounded-2xl border border-gray-200 bg-white p-4">
-                  <p className="font-semibold text-gray-800">Les parents cherchent une activité pour les week-ends.</p>
-                  <p className="mt-2 text-sm text-gray-600">Ils sont submergés par le choix et ne savent pas quoi essayer en premier.</p>
-                </div>
-              </div>
             </motion.div>
           </AnimatedSection>
         </div>
@@ -255,6 +215,7 @@ export default function Landing1() {
             <motion.div variants={fadeInUp}>
               <Link
                 href="/problemsolver/inscription"
+                onClick={() => trackCreateAccountClick('landing problem')}
                 className="inline-flex items-center px-8 py-4 bg-orange-500 text-white font-semibold rounded-lg hover:bg-orange-600 transition-colors text-lg"
               >
                 Créer mon compte gratuitement
@@ -366,6 +327,7 @@ export default function Landing1() {
             <motion.div variants={fadeInUp}>
               <Link
                 href="/problemsolver/inscription"
+                onClick={() => trackCreateAccountClick('landing problem')}
                 className="inline-flex items-center px-8 py-4 bg-orange-500 text-white font-semibold rounded-lg hover:bg-orange-600 transition-colors text-lg shadow-lg"
               >
                 Créer mon compte gratuitement
