@@ -1,17 +1,8 @@
-export function trackLandingView(landingName: string) {
+export function trackCtaClick(landingName: string, buttonName: string) {
   if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
-    window.gtag('event', 'landing_view', {
+    window.gtag('event', 'cta_click', {
       landing_name: landingName,
-      page_path: window.location.pathname,
-    });
-  }
-}
-
-export function trackCreateAccountClick(landingName: string) {
-  if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
-    window.gtag('event', 'create_account_click', {
-      landing_name: landingName,
-      button_name: 'create_account',
+      button_name: buttonName,
       transport_type: 'beacon',
     });
   }

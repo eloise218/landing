@@ -2,9 +2,9 @@
 
 import { motion } from 'framer-motion';
 import { useInView } from 'framer-motion';
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import Link from 'next/link';
-import { trackLandingView, trackCreateAccountClick } from '@/lib/analytics';
+import { trackCtaClick } from '@/lib/analytics';
 import {
   Sparkles, CheckCircle, ArrowRight,
   Monitor, MessageSquare, Zap, Shield, ChevronDown,
@@ -96,10 +96,6 @@ function CodeBlock() {
 }
 
 export default function Formation() {
-  useEffect(() => {
-    trackLandingView('landing formation');
-  }, []);
-
   return (
     <div className="min-h-screen bg-[#fafafa] text-gray-900 overflow-x-hidden">
 
@@ -161,7 +157,7 @@ export default function Formation() {
             >
               <Link
                 href="/formation/inscription"
-                onClick={() => trackCreateAccountClick('landing formation')}
+                onClick={() => trackCtaClick('landing formation', 'hero_cta')}
                 className="group inline-flex items-center justify-center rounded-full bg-gradient-to-r from-violet-600 to-orange-500 px-8 py-4 text-lg font-bold text-white shadow-lg shadow-violet-500/20 transition-all hover:shadow-xl hover:shadow-violet-500/30 hover:-translate-y-0.5"
               >
                 Je veux commencer
@@ -590,7 +586,7 @@ export default function Formation() {
             <motion.div variants={fadeInUp}>
               <Link
                 href="/formation/inscription"
-                onClick={() => trackCreateAccountClick('landing formation')}
+                onClick={() => trackCtaClick('landing formation', 'footer_cta')}
                 className="group inline-flex items-center justify-center rounded-full bg-gradient-to-r from-violet-600 to-orange-500 px-10 py-5 text-lg font-bold text-white shadow-lg shadow-violet-500/20 transition-all hover:shadow-xl hover:shadow-violet-500/30 hover:-translate-y-0.5"
               >
                 Je commence maintenant

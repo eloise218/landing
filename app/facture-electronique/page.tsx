@@ -1,9 +1,9 @@
 'use client';
 
 import { motion, useInView } from 'framer-motion';
-import { useRef, useEffect } from 'react';
+import { useRef } from 'react';
 import Link from 'next/link';
-import { trackLandingView, trackCreateAccountClick } from '@/lib/analytics';
+import { trackCtaClick } from '@/lib/analytics';
 import {
   ArrowRight, CheckCircle, XCircle, AlertTriangle,
   Shield, Zap, Clock, FileCheck, Users, Star,
@@ -42,10 +42,6 @@ function AnimatedSection({ children, className = "" }: { children: React.ReactNo
 }
 
 export default function FactureElectronique() {
-  useEffect(() => {
-    trackLandingView('landing facture');
-  }, []);
-
   return (
     <div className="min-h-screen bg-white text-gray-800 overflow-x-hidden">
 
@@ -101,7 +97,7 @@ export default function FactureElectronique() {
             >
               <Link
                 href="/facture-electronique/inscription"
-                onClick={() => trackCreateAccountClick('landing facture')}
+                onClick={() => trackCtaClick('landing facture', 'hero_cta')}
                 className="group inline-flex items-center justify-center rounded-full bg-teal-600 px-8 py-4 text-lg font-bold text-white shadow-md shadow-teal-200 transition-all hover:bg-teal-700 hover:shadow-lg hover:shadow-teal-300/40 hover:-translate-y-0.5"
               >
                 Créer mon compte
@@ -408,7 +404,7 @@ export default function FactureElectronique() {
             >
               <Link
                 href="/facture-electronique/inscription"
-                onClick={() => trackCreateAccountClick('landing facture')}
+                onClick={() => trackCtaClick('landing facture', 'footer_cta')}
                 className="group inline-flex items-center justify-center rounded-full bg-teal-600 px-8 py-4 text-lg font-bold text-white shadow-md shadow-teal-200 transition-all hover:bg-teal-700 hover:shadow-lg hover:shadow-teal-300/40 hover:-translate-y-0.5"
               >
                 Créer mon compte
