@@ -7,8 +7,16 @@ const subdomainRoutes: Record<string, string> = {
 };
 
 export function middleware(request: NextRequest) {
-  const host = request.headers.get('x-forwarded-host') || request.headers.get('host') || '';
+  const xForwardedHost = request.headers.get('x-forwarded-host');
+  const hostHeader = request.headers.get('host');
+  const host = xForwardedHost || hostHeader || '';
   const hostname = host.split(':')[0]; // remove port if present
+
+  // Debug logging - remove after fixing
+  console.log('[middleware] x-forwarded-host:', xForwardedHost);
+  console.log('[middleware] host:', hostHeader);
+  console.log('[middleware] resolved hostname:', hostname);
+  console.log('[middleware] pathname:', request.nextUrl.pathname);
 
   // Extract subdomain: e.g. "problemsolver" from "problemsolver.iaco.app"
   // Also works with "problemsolver.localhost" for local dev
@@ -22,6 +30,8 @@ export function middleware(request: NextRequest) {
     }
   }
 
+  console.log('[middleware] subdomain:', subdomain);
+
   if (!subdomain) return NextResponse.next();
 
   const targetPath = subdomainRoutes[subdomain];
@@ -32,6 +42,7 @@ export function middleware(request: NextRequest) {
   // Only rewrite if we're on the root path (to avoid rewriting assets, etc.)
   if (url.pathname === '/' || url.pathname === '') {
     url.pathname = targetPath;
+    console.log('[middleware] rewriting to:', targetPath);
     return NextResponse.rewrite(url);
   }
 

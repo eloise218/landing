@@ -1,38 +1,48 @@
 import Link from 'next/link';
-import { ArrowLeft, Zap } from 'lucide-react';
+import { ArrowLeft, Target } from 'lucide-react';
 
 export default function Inscription() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center px-4">
-      <div className="max-w-lg w-full text-center">
+    <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center px-4">
+      <div className="max-w-lg w-full text-center space-y-10">
+        {/* Logo */}
+        <div className="flex items-center justify-center gap-2">
+          <Target className="h-6 w-6 text-blue-600" />
+          <span className="text-xl font-bold">
+            <span className="text-slate-900">Problem</span>
+            <span className="text-blue-600">Finder</span>
+          </span>
+        </div>
+
+        {/* Card */}
+        <div className="bg-white border border-slate-200 rounded-2xl p-10 space-y-4">
+          <h1 className="text-2xl font-bold text-slate-900">
+            ProblemFinder est en phase de lancement.
+          </h1>
+          <p className="text-slate-600">
+            Nous finalisons les derniers éléments avant ouverture.
+            <br />
+            L&apos;accès public sera disponible très prochainement.
+          </p>
+          <p className="text-sm text-slate-400 pt-2">
+            Contact :{' '}
+            <a
+              href="mailto:contact@iaco.app"
+              className="text-blue-600 hover:text-blue-700 font-medium transition"
+            >
+              contact@iaco.app
+            </a>
+          </p>
+        </div>
+
+        {/* Back link */}
         <Link
           href="/problemsolver"
-          className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-12"
+          className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 text-sm font-medium transition"
         >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Retour
+          <ArrowLeft className="w-4 h-4" />
+          Retour à la page d&apos;accueil
         </Link>
-
-        <div className="space-y-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-orange-100">
-            <Zap className="w-8 h-8 text-orange-500" />
-          </div>
-
-          <div>
-            <h1 className="text-5xl font-bold text-gray-900 mb-4">
-              À bientôt !
-            </h1>
-            <p className="text-xl text-gray-600">
-              le site est en construction et arrive très bientôt
-            </p>
-          </div>
-
-          <div className="pt-8">
-            <p className="text-gray-500 mb-6">
-              En attendant vous pouvez nous contacter via <a href="mailto:contact@iaco.app" className="font-semibold text-orange-500 hover:text-orange-600 transition">contact@iaco.app</a>
-            </p>
-          </div>
-        </div>
       </div>
     </div>
   );
