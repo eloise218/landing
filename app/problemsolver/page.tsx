@@ -23,6 +23,7 @@ import {
   Globe,
   MessageCircle,
 } from 'lucide-react';
+import { t, type Lang } from './translations';
 
 /* ── Animations ─────────────────────────────────────────── */
 
@@ -59,7 +60,7 @@ function AnimatedSection({
   );
 }
 
-function AnimatedCounter({ target, suffix = '' }: { target: number; suffix?: string }) {
+function AnimatedCounter({ target, suffix = '', locale = 'en-US' }: { target: number; suffix?: string; locale?: string }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
   const [count, setCount] = useState(0);
@@ -85,7 +86,7 @@ function AnimatedCounter({ target, suffix = '' }: { target: number; suffix?: str
 
   return (
     <span ref={ref}>
-      {count.toLocaleString('fr-FR')}
+      {count.toLocaleString(locale)}
       {suffix}
     </span>
   );
@@ -95,6 +96,8 @@ function AnimatedCounter({ target, suffix = '' }: { target: number; suffix?: str
 
 export default function ProblemSolverLanding() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [lang, setLang] = useState<Lang>('en');
+  const numberLocale = lang === 'fr' ? 'fr-FR' : 'en-US';
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -114,14 +117,21 @@ export default function ProblemSolverLanding() {
               href="#comment-ca-marche"
               className="text-sm text-slate-600 hover:text-slate-900 transition"
             >
-              Comment ca marche
+              {t(lang, 'nav_how')}
             </a>
+            <button
+              onClick={() => setLang(lang === 'fr' ? 'en' : 'fr')}
+              className="flex items-center gap-1.5 text-sm text-slate-600 hover:text-slate-900 transition"
+            >
+              <Globe className="h-4 w-4" />
+              {lang === 'fr' ? 'EN' : 'FR'}
+            </button>
             <Link
               href="/problemsolver/inscription"
               onClick={() => trackCtaClick('landing problem', 'nav_cta')}
               className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition"
             >
-              Créer un compte
+              {t(lang, 'nav_cta')}
             </Link>
           </div>
 
@@ -147,8 +157,15 @@ export default function ProblemSolverLanding() {
                   className="block text-slate-600 hover:text-slate-900 transition"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  Comment ca marche
+                  {t(lang, 'nav_how')}
                 </a>
+                <button
+                  onClick={() => setLang(lang === 'fr' ? 'en' : 'fr')}
+                  className="flex items-center gap-1.5 text-slate-600 hover:text-slate-900 transition"
+                >
+                  <Globe className="h-4 w-4" />
+                  {lang === 'fr' ? 'EN' : 'FR'}
+                </button>
                 <Link
                   href="/problemsolver/inscription"
                   onClick={() => {
@@ -157,7 +174,7 @@ export default function ProblemSolverLanding() {
                   }}
                   className="block bg-blue-600 hover:bg-blue-700 text-white text-center font-semibold px-5 py-3 rounded-xl transition"
                 >
-                  Créer un compte
+                  {t(lang, 'nav_cta')}
                 </Link>
               </div>
             </motion.div>
@@ -175,23 +192,22 @@ export default function ProblemSolverLanding() {
                 variants={fadeInUp}
                 className="text-4xl sm:text-5xl font-extrabold text-slate-900 leading-tight"
               >
-                Valide ton idée avant de perdre 6 mois dessus.
+                {t(lang, 'hero_title')}
               </motion.h1>
 
               <motion.p
                 variants={fadeInUp}
                 className="mt-5 text-lg text-slate-600"
               >
-                Analyse les vraies frustrations des utilisateurs à travers le web
-                et découvre si ton idée répond à un problème réel.
+                {t(lang, 'hero_subtitle')}
               </motion.p>
 
               <motion.div variants={fadeInUp} className="mt-8 space-y-2.5">
-                {[
-                  'Donne un domaine ou une idée',
-                  'On analyse des milliers de sources',
-                  'Tu reçois un rapport clair avec preuves',
-                ].map((text) => (
+                {([
+                  t(lang, 'hero_check1'),
+                  t(lang, 'hero_check2'),
+                  t(lang, 'hero_check3'),
+                ] as const).map((text) => (
                   <div key={text} className="flex items-start gap-3">
                     <CheckCircle className="h-5 w-5 text-blue-600 mt-0.5 shrink-0" />
                     <span className="text-slate-700">{text}</span>
@@ -205,11 +221,11 @@ export default function ProblemSolverLanding() {
                   onClick={() => trackCtaClick('landing problem', 'hero_cta')}
                   className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-7 py-3.5 rounded-xl text-lg shadow-lg shadow-blue-600/25 transition"
                 >
-                  Créer un compte
+                  {t(lang, 'nav_cta')}
                   <ArrowRight className="h-5 w-5" />
                 </Link>
                 <span className="text-sm text-slate-400">
-                  3 analyses gratuites · Puis 19€/mois
+                  {t(lang, 'hero_free')}
                 </span>
               </motion.div>
             </AnimatedSection>
@@ -235,7 +251,7 @@ export default function ProblemSolverLanding() {
                   {/* Search bar */}
                   <div className="px-4 py-3 border-b border-slate-100 flex items-center gap-2">
                     <Search className="h-4 w-4 text-slate-300" />
-                    <span className="text-sm text-slate-500">planifier des voyages entre amis</span>
+                    <span className="text-sm text-slate-500">{t(lang, 'hero_search')}</span>
                   </div>
 
                   {/* Score + metrics */}
@@ -246,13 +262,13 @@ export default function ProblemSolverLanding() {
                     </div>
                     <div className="flex items-center gap-3">
                       <div className="text-right">
-                        <p className="text-xs text-slate-400">Plaintes</p>
+                        <p className="text-xs text-slate-400">{t(lang, 'hero_complaints')}</p>
                         <p className="text-sm font-semibold text-slate-900">2 846</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-xs text-slate-400">Intensité</p>
+                        <p className="text-xs text-slate-400">{t(lang, 'hero_intensity')}</p>
                         <span className="text-xs font-semibold text-red-600 bg-red-50 px-2 py-0.5 rounded-full">
-                          Élevée
+                          {t(lang, 'hero_high')}
                         </span>
                       </div>
                     </div>
@@ -262,7 +278,7 @@ export default function ProblemSolverLanding() {
                   <div className="px-4 py-3">
                     <div className="bg-slate-50 rounded-lg p-3 border-l-3 border-blue-600">
                       <p className="text-xs text-slate-600 italic">
-                        &ldquo;Organiser un voyage à 5 c&apos;est un enfer, personne répond pareil…&rdquo;
+                        &ldquo;{t(lang, 'hero_quote')}&rdquo;
                       </p>
                       <p className="text-[10px] text-slate-400 mt-1">Reddit, r/travel</p>
                     </div>
@@ -271,7 +287,7 @@ export default function ProblemSolverLanding() {
                   {/* Conclusion bar */}
                   <div className="px-4 py-2.5 bg-green-50 border-t border-green-100 flex items-center gap-2">
                     <CheckCircle className="h-3.5 w-3.5 text-green-600" />
-                    <p className="text-xs text-green-700 font-medium">Fort potentiel — problème massif et fréquent</p>
+                    <p className="text-xs text-green-700 font-medium">{t(lang, 'hero_conclusion')}</p>
                   </div>
                 </div>
               </motion.div>
@@ -285,14 +301,14 @@ export default function ProblemSolverLanding() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <AnimatedSection className="text-center mb-10">
             <motion.p variants={fadeInUp} className="text-sm font-semibold uppercase tracking-wider text-red-600 mb-4">
-              Le problème
+              {t(lang, 'problem_label')}
             </motion.p>
             <motion.h2 variants={fadeInUp} className="text-3xl sm:text-4xl font-bold text-slate-900 max-w-3xl mx-auto">
-              Le vrai blocage, ce n&apos;est pas de créer.{' '}
-              <span className="text-blue-600">C&apos;est de savoir quoi créer.</span>
+              {t(lang, 'problem_title1')}{' '}
+              <span className="text-blue-600">{t(lang, 'problem_title2')}</span>
             </motion.h2>
             <motion.p variants={fadeInUp} className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">
-              Tu as une idée… mais tu ne sais pas si quelqu&apos;un en a vraiment besoin.
+              {t(lang, 'problem_subtitle')}
             </motion.p>
           </AnimatedSection>
 
@@ -300,18 +316,18 @@ export default function ProblemSolverLanding() {
             {[
               {
                 emoji: '🤔',
-                title: 'Tu doutes',
-                desc: 'Est-ce un vrai problème ? Est-ce que des gens paieraient pour ça ?',
+                title: t(lang, 'problem_card1_title'),
+                desc: t(lang, 'problem_card1_desc'),
               },
               {
                 emoji: '🔍',
-                title: 'Tu cherches partout',
-                desc: 'Les infos sont dispersées sur des forums, avis, réseaux… sans conclusion claire.',
+                title: t(lang, 'problem_card2_title'),
+                desc: t(lang, 'problem_card2_desc'),
               },
               {
                 emoji: '⏳',
-                title: 'Tu perds du temps',
-                desc: 'Tu lis des centaines de messages sans avancer. Pendant ce temps, tu ne construis rien.',
+                title: t(lang, 'problem_card3_title'),
+                desc: t(lang, 'problem_card3_desc'),
               },
             ].map((item) => (
               <motion.div
@@ -333,22 +349,22 @@ export default function ProblemSolverLanding() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <AnimatedSection className="text-center mb-10">
             <motion.p variants={fadeInUp} className="text-sm font-semibold uppercase tracking-wider text-blue-600 mb-4">
-              La solution
+              {t(lang, 'solution_label')}
             </motion.p>
             <motion.h2 variants={fadeInUp} className="text-3xl sm:text-4xl font-bold text-slate-900">
-              On te montre la réalité du marché.
+              {t(lang, 'solution_title')}
             </motion.h2>
             <motion.p variants={fadeInUp} className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">
-              ProblemFinder analyse automatiquement les frustrations exprimées par de vrais utilisateurs sur :
+              {t(lang, 'solution_subtitle')}
             </motion.p>
           </AnimatedSection>
 
           <AnimatedSection className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-12">
             {[
-              { icon: MessageSquare, label: 'Forums', sub: 'Reddit, etc.' },
-              { icon: Star, label: 'Avis clients', sub: 'Trustpilot…' },
-              { icon: Globe, label: 'Réseaux sociaux', sub: 'X, Facebook…' },
-              { icon: MessageCircle, label: 'Commentaires', sub: 'Blogs, articles…' },
+              { icon: MessageSquare, label: t(lang, 'solution_forums'), sub: t(lang, 'solution_forums_sub') },
+              { icon: Star, label: t(lang, 'solution_reviews'), sub: t(lang, 'solution_reviews_sub') },
+              { icon: Globe, label: t(lang, 'solution_social'), sub: t(lang, 'solution_social_sub') },
+              { icon: MessageCircle, label: t(lang, 'solution_comments'), sub: t(lang, 'solution_comments_sub') },
             ].map((source) => (
               <motion.div
                 key={source.label}
@@ -366,8 +382,8 @@ export default function ProblemSolverLanding() {
 
           <AnimatedSection className="max-w-xl mx-auto space-y-3">
             {[
-              'Tu ne lis plus des milliers de messages',
-              'Tu obtiens directement une synthèse exploitable',
+              t(lang, 'solution_check1'),
+              t(lang, 'solution_check2'),
             ].map((text) => (
               <motion.div key={text} variants={fadeInUp} className="flex items-start gap-3">
                 <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 shrink-0" />
@@ -383,13 +399,13 @@ export default function ProblemSolverLanding() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <AnimatedSection className="text-center mb-10">
             <motion.p variants={fadeInUp} className="text-sm font-semibold uppercase tracking-wider text-blue-600 mb-4">
-              Le rapport
+              {t(lang, 'report_label')}
             </motion.p>
             <motion.h2 variants={fadeInUp} className="text-3xl sm:text-4xl font-bold text-slate-900">
-              Ce que tu reçois
+              {t(lang, 'report_title')}
             </motion.h2>
             <motion.p variants={fadeInUp} className="mt-4 text-lg text-slate-600">
-              Pour chaque idée ou domaine, tu obtiens un rapport structuré :
+              {t(lang, 'report_subtitle')}
             </motion.p>
           </AnimatedSection>
 
@@ -397,33 +413,33 @@ export default function ProblemSolverLanding() {
             {[
               {
                 icon: BarChart3,
-                title: 'Score de potentiel',
-                desc: 'Un score clair de 0 à 10 basé sur les données collectées.',
+                title: t(lang, 'report_score_title'),
+                desc: t(lang, 'report_score_desc'),
               },
               {
                 icon: TrendingUp,
-                title: 'Nombre de plaintes',
-                desc: 'Combien de personnes expriment ce problème publiquement.',
+                title: t(lang, 'report_complaints_title'),
+                desc: t(lang, 'report_complaints_desc'),
               },
               {
                 icon: Zap,
-                title: 'Fréquence du problème',
-                desc: 'À quelle fréquence ce problème est mentionné.',
+                title: t(lang, 'report_frequency_title'),
+                desc: t(lang, 'report_frequency_desc'),
               },
               {
                 icon: AlertCircle,
-                title: 'Niveau d\'intensité',
-                desc: 'De faible à critique — mesure l\'urgence ressentie.',
+                title: t(lang, 'report_intensity_title'),
+                desc: t(lang, 'report_intensity_desc'),
               },
               {
                 icon: Users,
-                title: 'Types d\'utilisateurs',
-                desc: 'Qui sont les personnes concernées par ce problème.',
+                title: t(lang, 'report_users_title'),
+                desc: t(lang, 'report_users_desc'),
               },
               {
                 icon: Quote,
-                title: 'Extraits réels',
-                desc: 'Messages authentiques analysés pour étayer les résultats.',
+                title: t(lang, 'report_extracts_title'),
+                desc: t(lang, 'report_extracts_desc'),
               },
             ].map((feature) => (
               <motion.div
@@ -447,10 +463,10 @@ export default function ProblemSolverLanding() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <AnimatedSection className="text-center mb-10">
             <motion.p variants={fadeInUp} className="text-sm font-semibold uppercase tracking-wider text-blue-600 mb-4">
-              Exemple concret
+              {t(lang, 'example_label')}
             </motion.p>
             <motion.h2 variants={fadeInUp} className="text-3xl sm:text-4xl font-bold text-slate-900">
-              Voici ce que tu recevrais
+              {t(lang, 'example_title')}
             </motion.h2>
           </AnimatedSection>
 
@@ -459,7 +475,7 @@ export default function ProblemSolverLanding() {
             <motion.div variants={fadeInUp} className="mb-6">
               <div className="bg-white border border-slate-200 rounded-xl p-4 flex items-center gap-3">
                 <Search className="h-5 w-5 text-slate-400 shrink-0" />
-                <span className="text-slate-600">application pour planifier des voyages entre amis</span>
+                <span className="text-slate-600">{t(lang, 'example_search')}</span>
               </div>
             </motion.div>
 
@@ -472,14 +488,14 @@ export default function ProblemSolverLanding() {
               <div className="p-6 sm:p-8 border-b border-slate-200">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                   <div>
-                    <p className="text-sm text-slate-400 mb-1">Score de potentiel</p>
+                    <p className="text-sm text-slate-400 mb-1">{t(lang, 'example_score_label')}</p>
                     <div className="flex items-baseline gap-2">
                       <span className="text-4xl font-bold text-green-600">9.1</span>
                       <span className="text-lg text-slate-400">/ 10</span>
                     </div>
                   </div>
                   <div className="bg-green-100 text-green-600 text-sm font-semibold px-4 py-2 rounded-full">
-                    Fort potentiel
+                    {t(lang, 'example_high_potential')}
                   </div>
                 </div>
               </div>
@@ -487,47 +503,35 @@ export default function ProblemSolverLanding() {
               {/* Metrics grid */}
               <div className="grid sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-slate-200">
                 <div className="p-6">
-                  <p className="text-sm text-slate-400 mb-1">Plaintes identifiées</p>
+                  <p className="text-sm text-slate-400 mb-1">{t(lang, 'example_complaints')}</p>
                   <p className="text-2xl font-bold text-slate-900">
-                    <AnimatedCounter target={2846} />
+                    <AnimatedCounter target={2846} locale={numberLocale} />
                   </p>
-                  <p className="text-xs text-slate-400 mt-1">30 derniers jours</p>
+                  <p className="text-xs text-slate-400 mt-1">{t(lang, 'example_last30')}</p>
                 </div>
                 <div className="p-6">
-                  <p className="text-sm text-slate-400 mb-1">Intensité</p>
+                  <p className="text-sm text-slate-400 mb-1">{t(lang, 'example_intensity')}</p>
                   <div className="flex items-center gap-2 mt-1">
                     <span className="bg-red-100 text-red-600 text-sm font-semibold px-3 py-1 rounded-full">
-                      Très élevée
+                      {t(lang, 'example_very_high')}
                     </span>
                   </div>
                 </div>
                 <div className="p-6">
-                  <p className="text-sm text-slate-400 mb-1">Utilisateurs concernés</p>
-                  <p className="text-sm text-slate-700 font-medium">Groupes d&apos;amis, étudiants, jeunes actifs</p>
+                  <p className="text-sm text-slate-400 mb-1">{t(lang, 'example_users')}</p>
+                  <p className="text-sm text-slate-700 font-medium">{t(lang, 'example_users_desc')}</p>
                 </div>
               </div>
 
               {/* Quotes */}
               <div className="p-6 sm:p-8 border-t border-slate-200">
-                <p className="text-sm font-semibold text-slate-900 mb-4">Extraits analysés</p>
+                <p className="text-sm font-semibold text-slate-900 mb-4">{t(lang, 'example_extracts')}</p>
                 <div className="space-y-3">
                   {[
-                    {
-                      text: 'Organiser un voyage à 5 c\'est un enfer, personne répond pareil…',
-                      source: 'Reddit, r/travel',
-                    },
-                    {
-                      text: 'On a mis 3 semaines juste pour choisir les dates…',
-                      source: 'Twitter',
-                    },
-                    {
-                      text: 'Entre les budgets, les préférences et les dispos, c\'est ingérable',
-                      source: 'Forum voyage',
-                    },
-                    {
-                      text: 'On finit toujours par ne rien faire à cause de l\'organisation',
-                      source: 'Reddit, r/france',
-                    },
+                    { text: t(lang, 'example_quote1'), source: 'Reddit, r/travel' },
+                    { text: t(lang, 'example_quote2'), source: 'Twitter' },
+                    { text: t(lang, 'example_quote3'), source: t(lang, 'example_quote3_source') },
+                    { text: t(lang, 'example_quote4'), source: 'Reddit, r/france' },
                   ].map((quote) => (
                     <div
                       key={quote.text}
@@ -550,7 +554,7 @@ export default function ProblemSolverLanding() {
                 <div className="flex items-center gap-3">
                   <CheckCircle className="h-5 w-5 text-green-600 shrink-0" />
                   <p className="text-green-700 font-semibold">
-                    Problème massif, émotionnel, fréquent → très fort potentiel produit
+                    {t(lang, 'example_conclusion')}
                   </p>
                 </div>
               </div>
@@ -564,10 +568,10 @@ export default function ProblemSolverLanding() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <AnimatedSection className="text-center mb-10">
             <motion.p variants={fadeInUp} className="text-sm font-semibold uppercase tracking-wider text-blue-600 mb-4">
-              Simple et rapide
+              {t(lang, 'how_label')}
             </motion.p>
             <motion.h2 variants={fadeInUp} className="text-3xl sm:text-4xl font-bold text-slate-900">
-              Comment ça marche
+              {t(lang, 'how_title')}
             </motion.h2>
           </AnimatedSection>
 
@@ -575,21 +579,21 @@ export default function ProblemSolverLanding() {
             {[
               {
                 step: '1',
-                title: 'Donne une idée ou un domaine',
-                desc: 'Décris simplement ce que tu veux explorer.',
-                example: 'Ex : "facturation freelance", "réservation vacances", "gestion budget étudiant"',
+                title: t(lang, 'how_step1_title'),
+                desc: t(lang, 'how_step1_desc'),
+                example: t(lang, 'how_step1_example'),
               },
               {
                 step: '2',
-                title: 'On analyse le web',
-                desc: 'Notre système identifie les frustrations récurrentes à grande échelle.',
-                example: 'Forums, avis, réseaux sociaux, commentaires publics…',
+                title: t(lang, 'how_step2_title'),
+                desc: t(lang, 'how_step2_desc'),
+                example: t(lang, 'how_step2_example'),
               },
               {
                 step: '3',
-                title: 'Tu reçois un rapport clair',
-                desc: 'Tu sais immédiatement si ça vaut le coup… ou non.',
-                example: 'Score, preuves, extraits, conclusion actionnable.',
+                title: t(lang, 'how_step3_title'),
+                desc: t(lang, 'how_step3_desc'),
+                example: t(lang, 'how_step3_example'),
               },
             ].map((item, i) => (
               <motion.div
@@ -623,22 +627,22 @@ export default function ProblemSolverLanding() {
               className="bg-blue-50/60 rounded-2xl border border-slate-200 shadow-lg p-8 text-center"
             >
               <div className="inline-flex items-center bg-green-100 text-green-600 text-sm font-semibold px-4 py-1.5 rounded-full mb-6">
-                Essai gratuit
+                {t(lang, 'pricing_badge')}
               </div>
 
-              <p className="text-slate-600 mb-2">3 analyses offertes</p>
+              <p className="text-slate-600 mb-2">{t(lang, 'pricing_free')}</p>
 
               <div className="flex items-baseline justify-center gap-1 mb-6">
                 <span className="text-4xl font-bold text-slate-900">19€</span>
-                <span className="text-slate-400">/mois</span>
+                <span className="text-slate-400">{t(lang, 'pricing_month')}</span>
               </div>
 
               <div className="space-y-3 text-left mb-8">
                 {[
-                  'Analyses illimitées',
-                  'Rapports détaillés avec preuves',
-                  'Score de potentiel business',
-                  'Extraits de messages réels',
+                  t(lang, 'pricing_feature1'),
+                  t(lang, 'pricing_feature2'),
+                  t(lang, 'pricing_feature3'),
+                  t(lang, 'pricing_feature4'),
                 ].map((feature) => (
                   <div key={feature} className="flex items-center gap-3">
                     <CheckCircle className="h-4 w-4 text-green-600 shrink-0" />
@@ -652,7 +656,7 @@ export default function ProblemSolverLanding() {
                 onClick={() => trackCtaClick('landing problem', 'pricing_cta')}
                 className="inline-flex items-center justify-center gap-2 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3.5 rounded-xl transition"
               >
-                Créer un compte
+                {t(lang, 'nav_cta')}
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </motion.div>
@@ -665,7 +669,7 @@ export default function ProblemSolverLanding() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <AnimatedSection className="text-center mb-10">
             <motion.h2 variants={fadeInUp} className="text-3xl sm:text-4xl font-bold text-slate-900">
-              Pour qui ?
+              {t(lang, 'audience_title')}
             </motion.h2>
           </AnimatedSection>
 
@@ -673,18 +677,18 @@ export default function ProblemSolverLanding() {
             {[
               {
                 emoji: '💡',
-                title: 'Futurs entrepreneurs',
-                desc: 'Tu cherches une idée solide, basée sur un vrai besoin du marché.',
+                title: t(lang, 'audience_card1_title'),
+                desc: t(lang, 'audience_card1_desc'),
               },
               {
                 emoji: '🎯',
-                title: 'Entrepreneurs',
-                desc: 'Tu veux valider ton idée avant de construire et investir.',
+                title: t(lang, 'audience_card2_title'),
+                desc: t(lang, 'audience_card2_desc'),
               },
               {
                 emoji: '⚡',
-                title: 'Builders',
-                desc: 'Tu veux éviter de perdre du temps sur un produit que personne ne veut.',
+                title: t(lang, 'audience_card3_title'),
+                desc: t(lang, 'audience_card3_desc'),
               },
             ].map((persona) => (
               <motion.div
@@ -706,13 +710,13 @@ export default function ProblemSolverLanding() {
         <div className="max-w-2xl mx-auto px-4 sm:px-6 text-center">
           <AnimatedSection>
             <motion.h2 variants={fadeInUp} className="text-2xl sm:text-3xl font-bold text-slate-900 mb-8">
-              Ce que ce n&apos;est pas
+              {t(lang, 'not_title')}
             </motion.h2>
 
             <motion.div variants={fadeInUp} className="space-y-4 mb-8">
               {[
-                'On ne te donne pas "l\'idée parfaite"',
-                'On ne garantit pas le succès',
+                t(lang, 'not_item1'),
+                t(lang, 'not_item2'),
               ].map((text) => (
                 <div key={text} className="flex items-center justify-center gap-3">
                   <X className="h-5 w-5 text-red-500 shrink-0" />
@@ -724,7 +728,7 @@ export default function ProblemSolverLanding() {
             <motion.div variants={fadeInUp} className="flex items-center justify-center gap-3">
               <CheckCircle className="h-5 w-5 text-blue-600 shrink-0" />
               <span className="text-slate-900 font-semibold">
-                On te donne la réalité du marché, pour décider intelligemment.
+                {t(lang, 'not_positive')}
               </span>
             </motion.div>
           </AnimatedSection>
@@ -736,10 +740,10 @@ export default function ProblemSolverLanding() {
         <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
           <AnimatedSection>
             <motion.h2 variants={fadeInUp} className="text-3xl sm:text-4xl font-bold text-slate-900">
-              Ton futur business commence par un problème réel.
+              {t(lang, 'cta_title')}
             </motion.h2>
             <motion.p variants={fadeInUp} className="mt-4 text-lg text-slate-600">
-              Arrête de deviner. Regarde ce que les utilisateurs disent vraiment.
+              {t(lang, 'cta_subtitle')}
             </motion.p>
             <motion.div variants={fadeInUp} className="mt-8">
               <Link
@@ -747,7 +751,7 @@ export default function ProblemSolverLanding() {
                 onClick={() => trackCtaClick('landing problem', 'footer_cta')}
                 className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 rounded-xl text-lg shadow-lg shadow-blue-600/25 transition"
               >
-                Créer un compte et valider mon idée
+                {t(lang, 'cta_button')}
                 <ArrowRight className="h-5 w-5" />
               </Link>
             </motion.div>
@@ -767,18 +771,18 @@ export default function ProblemSolverLanding() {
             </div>
 
             <p className="text-sm text-slate-400">
-              ProblemFinder © 2026 — Analyse des frustrations utilisateurs à grande échelle
+              {t(lang, 'footer_copy')}
             </p>
 
             <div className="flex items-center gap-6 text-sm text-slate-400">
               <a href="mailto:contact@iaco.app" className="hover:text-slate-600 transition">
-                Contact
+                {t(lang, 'footer_contact')}
               </a>
               <a href="#" className="hover:text-slate-600 transition">
-                Mentions légales
+                {t(lang, 'footer_legal')}
               </a>
               <a href="#" className="hover:text-slate-600 transition">
-                Confidentialité
+                {t(lang, 'footer_privacy')}
               </a>
             </div>
           </div>
