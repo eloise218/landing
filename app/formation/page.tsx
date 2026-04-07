@@ -2,13 +2,15 @@
 
 import { motion } from 'framer-motion';
 import { useInView } from 'framer-motion';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { trackCtaClick } from '@/lib/analytics';
 import {
-  Sparkles, CheckCircle, ArrowRight,
-  Monitor, MessageSquare, Zap, Shield, ChevronDown,
-  Rocket, Heart, Terminal, Code2, Globe
+  Sparkles, CheckCircle, ArrowRight, XCircle,
+  Monitor, ChevronDown,
+  Rocket, Globe, Lock, Clock, Wallet, Database, Menu, X,
+  Quote, Users, FolderKanban,
+  LayoutDashboard, FileText, Bot
 } from 'lucide-react';
 
 const fadeInUp = {
@@ -47,14 +49,14 @@ function FAQ({ question, answer }: { question: string; answer: string }) {
   return (
     <button
       onClick={() => setOpen(!open)}
-      className="w-full text-left bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/60 hover:border-violet-300 hover:bg-white/80 transition-all duration-300"
+      className="w-full text-left bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-violet-500/30 hover:bg-white/10 transition-all duration-300"
     >
       <div className="flex items-center justify-between gap-4">
-        <h3 className="text-lg font-semibold text-gray-800">{question}</h3>
+        <h3 className="text-lg font-semibold text-white">{question}</h3>
         <ChevronDown className={`w-5 h-5 text-gray-400 flex-shrink-0 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
       </div>
       {open && (
-        <p className="mt-4 text-gray-600 leading-relaxed">{answer}</p>
+        <p className="mt-4 text-gray-400 leading-relaxed">{answer}</p>
       )}
     </button>
   );
@@ -64,40 +66,88 @@ function GridPattern() {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       <div className="absolute inset-0" style={{
-        backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(139,92,246,0.07) 1px, transparent 0)',
+        backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(139,92,246,0.05) 1px, transparent 0)',
         backgroundSize: '40px 40px'
       }} />
     </div>
   );
 }
 
-function CodeBlock() {
+function Header() {
+  const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  const navItems = [
+    { label: "Programme", href: "#programme" },
+    { label: "Témoignages", href: "#temoignages" },
+    { label: "FAQ", href: "#faq" },
+  ];
+
   return (
-    <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/4 hidden xl:block opacity-[0.07] select-none pointer-events-none">
-      <pre className="text-sm leading-relaxed font-mono text-violet-900">
-{`function createApp() {
-  const idea = describe("Mon projet");
-  const app = claude.build(idea);
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-gray-950/80 backdrop-blur-lg shadow-[0_1px_0_0_rgba(255,255,255,0.03)]' : 'bg-transparent'}`}>
+      <div className="mx-auto max-w-5xl px-6 py-4 flex items-center justify-between">
+        {/* Logo */}
+        <a href="#" className="text-lg font-bold text-white">
+          Vibe <span className="bg-gradient-to-r from-violet-400 to-orange-400 bg-clip-text text-transparent">Coding</span>
+        </a>
 
-  app.addPages([
-    "accueil",
-    "dashboard",
-    "profil"
-  ]);
+        {/* Nav desktop */}
+        <nav className="hidden md:flex items-center gap-8">
+          {navItems.map((item) => (
+            <a key={item.href} href={item.href} className="text-sm text-gray-400 hover:text-violet-400 transition-colors">
+              {item.label}
+            </a>
+          ))}
+        </nav>
 
-  app.style("moderne");
-  app.deploy();
+        {/* CTA desktop */}
+        <Link
+          href="/formation/inscription"
+          onClick={() => trackCtaClick('landing formation', 'header_cta')}
+          className="hidden md:inline-flex items-center justify-center rounded-full bg-gradient-to-r from-violet-600 to-orange-500 px-5 py-2 text-sm font-bold text-white transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-violet-500/20"
+        >
+          Créer mon compte
+        </Link>
 
-  return app;
-}`}
-      </pre>
-    </div>
+        {/* Burger mobile */}
+        <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden text-white">
+          {menuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+        </button>
+      </div>
+
+      {/* Menu mobile */}
+      {menuOpen && (
+        <div className="md:hidden bg-gray-950/95 backdrop-blur-lg border-b border-white/5 px-6 pb-6">
+          <nav className="flex flex-col gap-4">
+            {navItems.map((item) => (
+              <a key={item.href} href={item.href} onClick={() => setMenuOpen(false)} className="text-sm text-gray-400 hover:text-violet-400 transition-colors">
+                {item.label}
+              </a>
+            ))}
+            <Link
+              href="/formation/inscription"
+              onClick={() => { trackCtaClick('landing formation', 'header_cta_mobile'); setMenuOpen(false); }}
+              className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-violet-600 to-orange-500 px-5 py-2.5 text-sm font-bold text-white mt-2"
+            >
+              Créer mon compte
+            </Link>
+          </nav>
+        </div>
+      )}
+    </header>
   );
 }
 
 export default function Formation() {
   return (
-    <div className="min-h-screen bg-[#fafafa] text-gray-900 overflow-x-hidden">
+    <div className="min-h-screen bg-gray-950 text-white overflow-x-hidden">
+      <Header />
 
       {/* ─── HERO ─── */}
       <section className="relative overflow-hidden bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950">
@@ -114,23 +164,23 @@ export default function Formation() {
         {/* Floating code decoration */}
         <div className="absolute top-20 left-8 hidden lg:block opacity-20 select-none pointer-events-none">
           <div className="font-mono text-xs text-violet-400 space-y-1">
-            <p><span className="text-pink-400">const</span> projet = <span className="text-green-400">&quot;mon-app&quot;</span>;</p>
-            <p><span className="text-pink-400">await</span> claude.<span className="text-amber-400">create</span>(projet);</p>
+            <p><span className="text-pink-400">const</span> business = <span className="text-green-400">&quot;mon-saas&quot;</span>;</p>
+            <p><span className="text-pink-400">await</span> claude.<span className="text-amber-400">build</span>(business);</p>
           </div>
         </div>
         <div className="absolute bottom-32 right-8 hidden lg:block opacity-20 select-none pointer-events-none">
           <div className="font-mono text-xs text-violet-400 space-y-1">
-            <p><span className="text-green-400">// Ton app est en ligne</span></p>
+            <p><span className="text-green-400">// Ton SaaS est en ligne</span></p>
             <p>app.<span className="text-amber-400">deploy</span>(<span className="text-green-400">&quot;production&quot;</span>);</p>
           </div>
         </div>
 
-        <div className="relative mx-auto max-w-4xl px-6 pt-24 pb-28 text-center">
+        <div className="relative mx-auto max-w-4xl px-6 pt-24 pb-20 text-center">
           <AnimatedSection>
             <motion.div variants={fadeInUp} className="mb-8">
               <span className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-sm px-5 py-2.5 text-sm font-medium text-violet-300 border border-white/10">
                 <Sparkles className="h-4 w-4 text-amber-400" />
-                Formation 100% débutant — Aucune ligne de code requise
+                Formation Vibe Coding — 100% avec l&apos;IA
               </span>
             </motion.div>
 
@@ -138,98 +188,310 @@ export default function Formation() {
               variants={fadeInUp}
               className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-[1.08] tracking-tight text-white"
             >
-              Crée ta première app web en
-              <span className="bg-gradient-to-r from-violet-400 via-purple-400 to-orange-400 bg-clip-text text-transparent"> 10 jours</span>
+              Lance ton side business en
+              <span className="bg-gradient-to-r from-violet-400 via-purple-400 to-orange-400 bg-clip-text text-transparent"> 10 jours</span>.
               <br />
-              <span className="text-gray-500 text-3xl sm:text-4xl md:text-5xl font-bold">sans écrire une seule ligne de code</span>
+              <span className="text-gray-500 text-2xl sm:text-3xl md:text-4xl font-bold">Pas dans 6 mois.</span>
             </motion.h1>
 
             <motion.p
               variants={fadeInUp}
               className="mx-auto mt-8 max-w-2xl text-lg sm:text-xl text-gray-400 leading-relaxed"
             >
-              Tu décris ce que tu veux, l&apos;IA le construit pour toi. Étape par étape, on te guide de zéro jusqu&apos;à un projet en ligne. Même si tu n&apos;as jamais touché un ordinateur pour coder.
+              Tu as l&apos;idée. L&apos;IA a les bras. Apprends à bâtir des SaaS et des outils web rentables sans écrire une seule ligne de code.
             </motion.p>
 
             <motion.div
               variants={fadeInUp}
-              className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
+              className="mt-10 flex flex-col items-center gap-4"
             >
               <Link
                 href="/formation/inscription"
                 onClick={() => trackCtaClick('landing formation', 'hero_cta')}
                 className="group inline-flex items-center justify-center rounded-full bg-gradient-to-r from-violet-600 to-orange-500 px-8 py-4 text-lg font-bold text-white shadow-lg shadow-violet-500/20 transition-all hover:shadow-xl hover:shadow-violet-500/30 hover:-translate-y-0.5"
               >
-                Je veux commencer
+                Créer mon compte
                 <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
               </Link>
+              <p className="text-sm text-gray-500">
+                <span className="text-violet-400 font-semibold">1 128</span> entrepreneurs ont déjà rejoint le mouvement
+              </p>
             </motion.div>
+          </AnimatedSection>
+        </div>
+      </section>
 
-            {/* Terminal preview */}
-            <motion.div
+      {/* ─── SOCIAL PROOF FLASH ─── */}
+      <section className="relative border-y border-white/5 bg-gray-900/50">
+        <div className="mx-auto max-w-4xl px-6 py-6">
+          <AnimatedSection>
+            <motion.div variants={fadeInUp} className="flex flex-wrap items-center justify-center gap-8 sm:gap-16 text-center">
+              {[
+                { icon: Users, value: "50", label: "Bêta-testeurs" },
+                { icon: FolderKanban, value: "112", label: "Projets lancés" }
+              ].map((stat, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <stat.icon className="h-5 w-5 text-violet-400" />
+                  <div>
+                    <p className="text-xl font-bold text-white">{stat.value}</p>
+                    <p className="text-xs text-gray-500">{stat.label}</p>
+                  </div>
+                </div>
+              ))}
+            </motion.div>
+          </AnimatedSection>
+        </div>
+      </section>
+
+      {/* ─── LE PROBLÈME ─── */}
+      <section className="relative py-24 px-6 bg-gradient-to-b from-gray-900 to-gray-900/80">
+        <GridPattern />
+        <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 h-[200px] w-[600px] rounded-full bg-violet-600/5 blur-[100px]" />
+        <div className="relative mx-auto max-w-3xl">
+          <AnimatedSection>
+            <motion.p variants={fadeInUp} className="text-sm font-semibold uppercase tracking-wider text-amber-400 mb-4 text-center">
+              Le problème
+            </motion.p>
+            <motion.h2
               variants={fadeInUp}
-              className="mt-16 mx-auto max-w-lg"
+              className="text-3xl sm:text-4xl font-bold mb-6 text-center"
             >
-              <div className="rounded-2xl bg-gray-900/80 backdrop-blur-sm border border-white/10 shadow-2xl overflow-hidden">
-                <div className="flex items-center gap-2 px-4 py-3 bg-white/5 border-b border-white/5">
-                  <div className="h-3 w-3 rounded-full bg-red-500/80" />
-                  <div className="h-3 w-3 rounded-full bg-yellow-500/80" />
-                  <div className="h-3 w-3 rounded-full bg-green-500/80" />
-                  <span className="ml-2 text-xs text-gray-500 font-mono">terminal</span>
-                </div>
-                <div className="p-5 font-mono text-sm text-left">
-                  <p className="text-gray-500">$ claude</p>
-                  <p className="text-violet-400 mt-2">Que veux-tu créer aujourd&apos;hui ?</p>
-                  <p className="text-gray-300 mt-2">
-                    <span className="text-green-400">&gt;</span> Un site pour mon portfolio avec une page contact
-                  </p>
-                  <p className="text-amber-400 mt-2">
-                    Création en cours...
-                    <span className="animate-pulse ml-1">|</span>
-                  </p>
-                </div>
+              Pourquoi 90% des entrepreneurs n&apos;envoient jamais leur projet ?
+            </motion.h2>
+            <motion.p variants={fadeInUp} className="text-lg text-gray-400 mb-14 text-center">
+              Tu as une idée géniale. Tu es motivé. Mais dès qu&apos;il s&apos;agit de concrétiser, tu te retrouves face à un mur :
+            </motion.p>
+          </AnimatedSection>
+
+          <div className="grid gap-4">
+            {[
+              { icon: Lock, title: "Le mur technique", desc: "\"Je ne sais pas coder, je dois trouver un associé.\"" },
+              { icon: Wallet, title: "Le mur financier", desc: "\"Les agences me demandent 5 000€ pour un MVP.\"" },
+              { icon: Clock, title: "Le mur du temps", desc: "\"Apprendre le Python ? J'ai un job, je ne peux pas y passer 2 ans.\"" }
+            ].map((item, i) => (
+              <AnimatedSection key={i}>
+                <motion.div
+                  variants={fadeInUp}
+                  className="group flex items-start gap-5 bg-gray-800/50 rounded-2xl p-6 border border-gray-700/50 hover:border-amber-500/30 hover:bg-gray-800/70 transition-all duration-300"
+                >
+                  <div className="flex-shrink-0 flex h-12 w-12 items-center justify-center rounded-xl bg-amber-500/10 border border-amber-500/20">
+                    <item.icon className="h-6 w-6 text-amber-400" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-white text-lg mb-1">{item.title}</h3>
+                    <p className="text-gray-400 italic">{item.desc}</p>
+                  </div>
+                </motion.div>
+              </AnimatedSection>
+            ))}
+          </div>
+
+          <AnimatedSection>
+            <motion.p variants={fadeInUp} className="text-center text-lg text-gray-500 mt-10 font-medium">
+              Résultat : <span className="text-white">Ton idée meurt dans un coin de ton cerveau.</span> C&apos;est fini.
+            </motion.p>
+          </AnimatedSection>
+
+          {/* Témoignage Léa */}
+          <AnimatedSection>
+            <motion.div variants={fadeInUp} className="mt-14 bg-white/5 rounded-2xl p-8 border border-violet-500/20 relative">
+              <Quote className="absolute top-4 left-4 h-8 w-8 text-violet-500/20" />
+              <p className="text-gray-300 leading-relaxed italic pl-8">
+                &quot;J&apos;ai toujours été nul en code. Ici, je ne code pas, je décris. Résultat : mon annuaire IA a atteint 850 visiteurs en 24h. C&apos;est du Vibe Coding pur.&quot;
+              </p>
+              <p className="mt-4 text-sm text-violet-400 font-semibold pl-8">— Léa, fondatrice de AI-Directory</p>
+            </motion.div>
+          </AnimatedSection>
+        </div>
+      </section>
+
+      {/* ─── OLD VS NEW (LA MÉTHODE) ─── */}
+      <section className="relative py-24 px-6 bg-gray-900">
+        <div className="absolute inset-0" style={{
+          backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.02) 1px, transparent 0)',
+          backgroundSize: '32px 32px'
+        }} />
+        <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[400px] w-[600px] rounded-full bg-violet-600/10 blur-[120px]" />
+
+        <div className="relative mx-auto max-w-4xl">
+          <AnimatedSection>
+            <motion.p variants={fadeInUp} className="text-sm font-semibold uppercase tracking-wider text-violet-400 mb-4 text-center">
+              La méthode
+            </motion.p>
+            <motion.h2
+              variants={fadeInUp}
+              className="text-3xl sm:text-4xl font-bold text-center mb-4"
+            >
+              Le code classique est mort pour les entrepreneurs.
+            </motion.h2>
+            <motion.p
+              variants={fadeInUp}
+              className="text-lg text-gray-400 text-center mb-16 max-w-2xl mx-auto"
+            >
+              Les écoles de code t&apos;apprennent à devenir un employé. Moi, je t&apos;apprends à devenir un <span className="text-violet-400 font-semibold">Maker</span>.
+            </motion.p>
+          </AnimatedSection>
+
+          {/* Comparison Table */}
+          <AnimatedSection>
+            <motion.div variants={fadeInUp} className="grid md:grid-cols-2 gap-4">
+              {/* Old Way */}
+              <div className="rounded-2xl p-8 bg-white/5 border border-white/10">
+                <h3 className="text-lg font-bold text-gray-400 mb-6 flex items-center gap-2">
+                  <XCircle className="h-5 w-5 text-gray-500" />
+                  L&apos;ancienne école <span className="text-xs text-gray-600">(Udemy/Bootcamps)</span>
+                </h3>
+                <ul className="space-y-5">
+                  {[
+                    "6 mois pour comprendre le JavaScript",
+                    "Apprendre à trier des listes (inutile)",
+                    "Coût : 8 000€ ou 100h de vidéos",
+                    "Tu abandonnes au bout de 2 semaines"
+                  ].map((item, i) => (
+                    <li key={i} className="flex gap-3 text-gray-500 line-through decoration-gray-700">
+                      <span className="text-gray-600 flex-shrink-0">✕</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* New Way */}
+              <div className="rounded-2xl p-8 bg-violet-500/10 border border-violet-500/20">
+                <h3 className="text-lg font-bold text-violet-300 mb-6 flex items-center gap-2">
+                  <Sparkles className="h-5 w-5 text-violet-400" />
+                  La méthode Vibe Coding <span className="text-xs text-violet-500">(IA)</span>
+                </h3>
+                <ul className="space-y-5">
+                  {[
+                    "10 jours pour lancer ton application",
+                    "Apprendre à générer des revenus",
+                    "Coût : Le prix d'un café par jour",
+                    "Tu vois ton app prendre vie en 30 min"
+                  ].map((item, i) => (
+                    <li key={i} className="flex gap-3 text-gray-200">
+                      <CheckCircle className="h-5 w-5 text-violet-400 flex-shrink-0" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
               </div>
             </motion.div>
           </AnimatedSection>
         </div>
       </section>
 
-      {/* ─── LE PROBLÈME (empathie) ─── */}
-      <section className="relative py-24 px-6 bg-white">
+      {/* ─── TON HISTOIRE : LE DÉCLIC ─── */}
+      <section className="relative py-24 px-6 bg-gray-950">
         <GridPattern />
-        <div className="relative mx-auto max-w-3xl text-center">
+        <div className="pointer-events-none absolute top-0 right-0 h-[400px] w-[400px] rounded-full bg-orange-500/10 blur-[120px]" />
+
+        <div className="relative mx-auto max-w-3xl">
           <AnimatedSection>
-            <motion.p variants={fadeInUp} className="text-sm font-semibold uppercase tracking-wider text-violet-600 mb-4">
-              On te comprend
+            <motion.p variants={fadeInUp} className="text-sm font-semibold uppercase tracking-wider text-orange-400 mb-4 text-center">
+              Le déclic
             </motion.p>
             <motion.h2
               variants={fadeInUp}
-              className="text-3xl sm:text-4xl font-bold mb-6 text-gray-900"
+              className="text-3xl sm:text-4xl font-bold text-center mb-12"
             >
-              Tu as envie de créer, mais tu bloques toujours au même endroit
+              J&apos;avais une idée, mais mon &quot;associé technique&quot; a disparu.
             </motion.h2>
-            <motion.p variants={fadeInUp} className="text-lg text-gray-500 mb-14">
-              Si tu te reconnais dans une de ces situations, cette formation est faite pour toi.
+          </AnimatedSection>
+
+          <AnimatedSection>
+            <motion.div variants={fadeInUp} className="space-y-6 text-lg text-gray-400 leading-relaxed">
+              <p>
+                Il y a quelques mois, j&apos;étais comme toi. J&apos;avais un projet de SaaS, un co-fondateur technique... et du jour au lendemain, <span className="text-white font-semibold">plus de nouvelles</span>. Il a arrêté de me répondre.
+              </p>
+              <p>
+                J&apos;étais bloqué. Je ne savais pas coder.
+              </p>
+              <p>
+                Au lieu d&apos;abandonner, j&apos;ai utilisé <span className="text-violet-400 font-semibold">Claude Code</span>. En 3 semaines, j&apos;ai lancé <span className="text-white font-semibold">4 sites</span>. J&apos;ai généré <span className="text-white font-semibold">10 000 vues</span>. Des gens ont commencé à me demander : &quot;Comment tu as fait ça sans dev ?&quot;.
+              </p>
+              <p className="text-xl text-white font-bold">
+                La réponse : Je ne code pas, je vibe. Je décris, l&apos;IA construit.
+              </p>
+            </motion.div>
+          </AnimatedSection>
+        </div>
+      </section>
+
+      {/* ─── PROGRAMME 10 JOURS ─── */}
+      <section id="programme" className="relative py-24 px-6 bg-gray-900 scroll-mt-20">
+        <div className="absolute inset-0" style={{
+          backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.02) 1px, transparent 0)',
+          backgroundSize: '32px 32px'
+        }} />
+
+        <div className="relative mx-auto max-w-4xl">
+          <AnimatedSection>
+            <motion.p variants={fadeInUp} className="text-sm font-semibold uppercase tracking-wider text-violet-400 mb-4 text-center">
+              Le programme
+            </motion.p>
+            <motion.h2
+              variants={fadeInUp}
+              className="text-3xl sm:text-4xl font-bold text-center mb-4"
+            >
+              10 jours pour lancer
+            </motion.h2>
+            <motion.p
+              variants={fadeInUp}
+              className="text-lg text-gray-400 text-center mb-16"
+            >
+              Pas de blabla. Que du concret.
             </motion.p>
           </AnimatedSection>
 
-          <div className="grid gap-3 text-left">
+          <div className="space-y-4">
             {[
-              "Tu regardes des tutos depuis des mois… mais tu n'as toujours rien créé",
-              "Tu as une idée en tête mais tu ne sais pas par où commencer",
-              "Le code te fait peur ou te décourage dès les premières lignes",
-              "Tu as essayé des no-code mais tu te sens limité",
-              "Tu aimerais juste que quelqu'un te guide pas à pas"
-            ].map((text, i) => (
+              {
+                days: "Jour 1–2",
+                title: "Le Setup de Guerre",
+                desc: "Installation de Claude Code et ton premier \"Hello World\" en 15 minutes.",
+                icon: Rocket,
+                gradient: "from-violet-500 to-violet-600"
+              },
+              {
+                days: "Jour 3–5",
+                title: "Création de la machine",
+                desc: "Base de données, authentification, logique métier. Tu parles en français, l'IA exécute.",
+                icon: Database,
+                gradient: "from-purple-500 to-purple-600"
+              },
+              {
+                days: "Jour 6–8",
+                title: "Design & Expérience",
+                desc: "On rend ton app sexy et professionnelle pour qu'elle soit prête à être vendue.",
+                icon: Monitor,
+                gradient: "from-orange-500 to-orange-600"
+              },
+              {
+                days: "Jour 9–10",
+                title: "Mise en ligne & Cash",
+                desc: "On déploie sur le web et on configure les premiers paiements.",
+                icon: Globe,
+                gradient: "from-green-500 to-emerald-600"
+              }
+            ].map((item, i) => (
               <AnimatedSection key={i}>
                 <motion.div
                   variants={fadeInUp}
-                  className="group flex items-start gap-4 bg-gray-50 rounded-xl p-5 border border-gray-100 hover:bg-violet-50 hover:border-violet-200 transition-all duration-300"
+                  className="group flex items-start gap-5 bg-white/5 rounded-2xl p-6 border border-white/10 hover:bg-white/[0.07] hover:border-violet-500/30 transition-all duration-300"
                 >
-                  <span className="mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-violet-100 text-violet-600 text-sm font-bold group-hover:bg-violet-200 transition-colors">
-                    {i + 1}
-                  </span>
-                  <p className="text-gray-700 font-medium">{text}</p>
+                  <div className={`flex-shrink-0 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${item.gradient} shadow-lg`}>
+                    <item.icon className="h-6 w-6 text-white" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-1">
+                      <span className="text-xs font-bold font-mono uppercase tracking-wider text-violet-400 bg-violet-500/10 px-2.5 py-1 rounded-md w-fit border border-violet-500/20">
+                        {item.days}
+                      </span>
+                      <h3 className="font-bold text-white text-lg">{item.title}</h3>
+                    </div>
+                    <p className="text-gray-400 mt-1">{item.desc}</p>
+                  </div>
                 </motion.div>
               </AnimatedSection>
             ))}
@@ -237,46 +499,205 @@ export default function Formation() {
         </div>
       </section>
 
-      {/* ─── LA SOLUTION ─── */}
-      <section className="relative py-24 px-6 bg-gradient-to-b from-gray-950 to-gray-900 text-white">
-        <div className="absolute inset-0" style={{
-          backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.03) 1px, transparent 0)',
-          backgroundSize: '32px 32px'
-        }} />
+      {/* ─── TÉMOIGNAGES ─── */}
+      <section id="temoignages" className="relative py-24 px-6 bg-gray-950 scroll-mt-20">
+        <GridPattern />
         <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[400px] w-[600px] rounded-full bg-violet-600/10 blur-[120px]" />
 
         <div className="relative mx-auto max-w-5xl">
           <AnimatedSection>
             <motion.p variants={fadeInUp} className="text-sm font-semibold uppercase tracking-wider text-violet-400 mb-4 text-center">
-              La solution
+              Ce qu&apos;ils ont bâti
             </motion.p>
             <motion.h2
               variants={fadeInUp}
-              className="text-3xl sm:text-4xl font-bold text-center mb-4 text-white"
+              className="text-3xl sm:text-4xl font-bold text-center mb-16"
             >
-              Tu parles, l&apos;IA construit
+              Ils ont lancé. À ton tour.
+            </motion.h2>
+          </AnimatedSection>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            {[
+              {
+                quote: "J'ai lancé mon annuaire d'IA en 10 jours. J'ai déjà fait mes 3 premières ventes sur Stripe. C'est irréel.",
+                name: "Thomas B.",
+                project: "A bâti ToolFinder",
+                tag: "\"Je pensais que c'était réservé aux génies.\""
+              },
+              {
+                quote: "J'ai testé Bubble et Webflow, c'était trop limité. Avec cette formation, je crée des vraies apps complexes sans limite.",
+                name: "Marc-Antoine",
+                project: "A bâti SaaS-Template",
+                tag: "\"Le futur du No-Code.\""
+              },
+              {
+                quote: "Je payais un dev 400€ par mois pour des petites modifs. Avec Claude Code, je les fais moi-même en 2 minutes. C'est le meilleur investissement de mon année.",
+                name: "Lucas D.",
+                project: "SaaS de Fitness",
+                tag: "\"J'ai viré mon dev freelance.\""
+              },
+              {
+                quote: "Les cours classiques sont d'un ennui mortel. Ici, on build, on ship, on encaisse. C'est tout ce qui m'importe.",
+                name: "Kevin M.",
+                project: "Indie Hacker",
+                tag: "\"Enfin une formation pour les business.\""
+              }
+            ].map((item, i) => (
+              <AnimatedSection key={i}>
+                <motion.div
+                  variants={fadeInUp}
+                  className="bg-white/5 rounded-2xl p-7 border border-white/10 hover:border-violet-500/20 transition-all duration-300 flex flex-col"
+                >
+                  <p className="text-sm font-semibold text-violet-400 mb-3">{item.tag}</p>
+                  <Quote className="h-6 w-6 text-violet-500/30 mb-3" />
+                  <p className="text-gray-300 leading-relaxed flex-1 italic">&quot;{item.quote}&quot;</p>
+                  <div className="mt-5 pt-5 border-t border-white/10">
+                    <p className="font-bold text-white">{item.name}</p>
+                    <p className="text-sm text-gray-500">{item.project}</p>
+                  </div>
+                </motion.div>
+              </AnimatedSection>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── C'EST POUR QUI ─── */}
+      <section className="relative py-24 px-6 bg-gray-900">
+        <div className="absolute inset-0" style={{
+          backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.02) 1px, transparent 0)',
+          backgroundSize: '32px 32px'
+        }} />
+
+        <div className="relative mx-auto max-w-4xl">
+          <AnimatedSection>
+            <motion.h2
+              variants={fadeInUp}
+              className="text-3xl sm:text-4xl font-bold text-center mb-16"
+            >
+              C&apos;est pour toi ?
+            </motion.h2>
+          </AnimatedSection>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <AnimatedSection>
+              <motion.div
+                variants={fadeInUp}
+                className="rounded-2xl p-8 bg-green-500/5 border border-green-500/20 h-full"
+              >
+                <h3 className="text-xl font-bold text-green-400 mb-6 flex items-center gap-2">
+                  <CheckCircle className="h-5 w-5" /> C&apos;est pour toi si
+                </h3>
+                <ul className="space-y-4">
+                  {[
+                    "Tu as des idées de business plein la tête mais tu es bloqué par la tech.",
+                    "Tu es fatigué de chercher un \"associé technique\" qui ne vient jamais.",
+                    "Tu veux tester un marché rapidement sans dépenser des milliers d'euros."
+                  ].map((item, i) => (
+                    <li key={i} className="flex gap-3">
+                      <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-300">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            </AnimatedSection>
+
+            <AnimatedSection>
+              <motion.div
+                variants={fadeInUp}
+                className="rounded-2xl p-8 bg-white/5 border border-white/10 h-full"
+              >
+                <h3 className="text-xl font-bold text-gray-500 mb-6 flex items-center gap-2">
+                  <XCircle className="h-5 w-5" /> Ce n&apos;est PAS pour toi si
+                </h3>
+                <ul className="space-y-4">
+                  {[
+                    "Tu veux devenir développeur salarié chez Google.",
+                    "Tu aimes passer 4 heures à chercher une virgule manquante dans ton code."
+                  ].map((item, i) => (
+                    <li key={i} className="flex gap-3">
+                      <span className="h-5 w-5 flex-shrink-0 mt-0.5 rounded-full border-2 border-gray-600" />
+                      <span className="text-gray-500">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            </AnimatedSection>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── FAQ ─── */}
+      <section id="faq" className="relative py-24 px-6 bg-gray-950 scroll-mt-20">
+        <GridPattern />
+        <div className="relative mx-auto max-w-3xl">
+          <AnimatedSection>
+            <motion.h2
+              variants={fadeInUp}
+              className="text-3xl sm:text-4xl font-bold text-center mb-14"
+            >
+              Questions fréquentes
+            </motion.h2>
+          </AnimatedSection>
+
+          <div className="space-y-3">
+            <FAQ
+              question="Est-ce que je dois avoir des bases ?"
+              answer="Non. Si tu sais écrire un mail, tu sais utiliser Claude Code."
+            />
+            <FAQ
+              question="Combien de temps ça prend ?"
+              answer="1h par jour pendant 10 jours suffit pour voir ton projet en ligne."
+            />
+            <FAQ
+              question="C'est quoi la différence avec le No-Code ?"
+              answer="Le No-Code est limité par des blocs. Ici, tu as la puissance du vrai code, mais c'est l'IA qui le rédige pour toi."
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* ─── CE QUE TU VAS CONSTRUIRE ─── */}
+      <section className="relative py-24 px-6 bg-gray-900">
+        <div className="absolute inset-0" style={{
+          backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.02) 1px, transparent 0)',
+          backgroundSize: '32px 32px'
+        }} />
+        <div className="pointer-events-none absolute bottom-0 left-1/4 h-[300px] w-[400px] rounded-full bg-orange-500/10 blur-[100px]" />
+
+        <div className="relative mx-auto max-w-5xl">
+          <AnimatedSection>
+            <motion.p variants={fadeInUp} className="text-sm font-semibold uppercase tracking-wider text-violet-400 mb-4 text-center">
+              Exemples concrets
+            </motion.p>
+            <motion.h2
+              variants={fadeInUp}
+              className="text-3xl sm:text-4xl font-bold text-center mb-6"
+            >
+              Qu&apos;est-ce que tu vas construire ?
             </motion.h2>
             <motion.p
               variants={fadeInUp}
               className="text-lg text-gray-400 text-center mb-16 max-w-2xl mx-auto"
             >
-              Avec Claude Code, tu décris ton projet en français. L&apos;IA comprend, code et crée pour toi. Tu pilotes, elle exécute.
+              Voici des exemples de ce que nos membres ont lancé en moins de 10 jours :
             </motion.p>
           </AnimatedSection>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {[
-              { icon: MessageSquare, title: "Tu décris", desc: "En français, avec tes mots. Pas de jargon technique.", step: "01" },
-              { icon: Zap, title: "L'IA crée", desc: "Claude Code génère ton application en temps réel.", step: "02" },
-              { icon: Monitor, title: "Tu vois le résultat", desc: "À chaque étape, tu vois ce qui a été construit.", step: "03" },
-              { icon: Rocket, title: "Tu mets en ligne", desc: "Ton projet est accessible au monde entier.", step: "04" }
+              { icon: Bot, title: "Un SaaS IA", desc: "Un outil qui génère des posts LinkedIn automatiquement." },
+              { icon: Globe, title: "Un Annuaire", desc: "La liste des meilleurs restaurants de Paris filtrée par IA." },
+              { icon: LayoutDashboard, title: "Un Outil Productivité", desc: "Un dashboard personnel pour gérer tes finances." },
+              { icon: FileText, title: "Une Landing Page", desc: "Exactement comme celle-ci, mais pour ton produit." }
             ].map((item, i) => (
               <AnimatedSection key={i}>
                 <motion.div
                   variants={fadeInUp}
-                  className="relative text-center p-6 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 hover:border-violet-500/30 transition-all duration-300"
+                  className="text-center p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-violet-500/20 hover:bg-white/[0.07] transition-all duration-300"
                 >
-                  <span className="absolute top-4 right-4 text-xs font-mono text-violet-500/50">{item.step}</span>
                   <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-500/10 border border-violet-500/20">
                     <item.icon className="h-7 w-7 text-violet-400" />
                   </div>
@@ -286,276 +707,24 @@ export default function Formation() {
               </AnimatedSection>
             ))}
           </div>
-        </div>
-      </section>
 
-      {/* ─── PROGRAMME 10 JOURS ─── */}
-      <section className="relative py-24 px-6 bg-white">
-        <GridPattern />
-        <CodeBlock />
-        <div className="relative mx-auto max-w-4xl">
+          {/* Témoignage Maxime */}
           <AnimatedSection>
-            <motion.p variants={fadeInUp} className="text-sm font-semibold uppercase tracking-wider text-violet-600 mb-4 text-center">
-              Le programme
-            </motion.p>
-            <motion.h2
-              variants={fadeInUp}
-              className="text-3xl sm:text-4xl font-bold text-center mb-4 text-gray-900"
-            >
-              10 jours pour passer de zéro à ton app en ligne
-            </motion.h2>
-            <motion.p
-              variants={fadeInUp}
-              className="text-lg text-gray-500 text-center mb-16"
-            >
-              Chaque jour, un objectif clair. Pas de blabla, que de l&apos;action.
-            </motion.p>
+            <motion.div variants={fadeInUp} className="mt-14 bg-white/5 rounded-2xl p-8 border border-violet-500/20 relative">
+              <Quote className="absolute top-4 left-4 h-8 w-8 text-violet-500/20" />
+              <p className="text-gray-300 leading-relaxed italic pl-8">
+                &quot;Je cherchais à lancer un side-project depuis 1 an. Avec cette méthode, je l&apos;ai fait en une semaine. Déjà $320 de revenu récurrent mensuel. Plus besoin d&apos;attendre après un développeur.&quot;
+              </p>
+              <p className="mt-4 text-sm text-violet-400 font-semibold pl-8">— Maxime, fondateur de AutoPost-IA</p>
+            </motion.div>
           </AnimatedSection>
-
-          <div className="relative">
-            <div className="space-y-4">
-              {[
-                { days: "Jour 1–2", title: "Installation & premiers pas", desc: "Tu prépares ton environnement et tu fais ta première demande à l'IA. En 30 min, tu vois ton premier résultat.", icon: Terminal, gradient: "from-violet-500 to-violet-600" },
-                { days: "Jour 3–4", title: "Apprendre à parler à l'IA", desc: "Les bons mots, les bonnes méthodes. Tu apprends à obtenir exactement ce que tu veux de Claude Code.", icon: MessageSquare, gradient: "from-purple-500 to-purple-600" },
-                { days: "Jour 5–6", title: "Construire ton projet", desc: "Tu commences à créer ta vraie application. Page par page, fonctionnalité par fonctionnalité.", icon: Code2, gradient: "from-orange-500 to-orange-600" },
-                { days: "Jour 7–8", title: "Design & finitions", desc: "Ton app devient belle et professionnelle. Tu apprends à demander les bons ajustements visuels.", icon: Sparkles, gradient: "from-pink-500 to-pink-600" },
-                { days: "Jour 9–10", title: "Mise en ligne", desc: "Tu publies ton projet sur Internet. Il est accessible à tout le monde. C'est réel.", icon: Globe, gradient: "from-green-500 to-emerald-600" }
-              ].map((item, i) => (
-                <AnimatedSection key={i}>
-                  <motion.div
-                    variants={fadeInUp}
-                    className="group flex items-start gap-5 bg-gray-50 rounded-2xl p-6 border border-gray-100 hover:bg-white hover:shadow-lg hover:shadow-gray-200/50 hover:border-gray-200 transition-all duration-300"
-                  >
-                    <div className={`flex-shrink-0 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${item.gradient} shadow-lg`}>
-                      <item.icon className="h-6 w-6 text-white" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-1">
-                        <span className="text-xs font-bold font-mono uppercase tracking-wider text-violet-600 bg-violet-100 px-2.5 py-1 rounded-md w-fit">
-                          {item.days}
-                        </span>
-                        <h3 className="font-bold text-gray-900 text-lg">{item.title}</h3>
-                      </div>
-                      <p className="text-gray-500 mt-1">{item.desc}</p>
-                    </div>
-                  </motion.div>
-                </AnimatedSection>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── CE QUE TU OBTIENS ─── */}
-      <section className="py-24 px-6 bg-gradient-to-b from-violet-50 to-white">
-        <div className="mx-auto max-w-4xl">
-          <AnimatedSection>
-            <motion.p variants={fadeInUp} className="text-sm font-semibold uppercase tracking-wider text-violet-600 mb-4 text-center">
-              Ce que tu obtiens
-            </motion.p>
-            <motion.h2
-              variants={fadeInUp}
-              className="text-3xl sm:text-4xl font-bold text-center mb-16 text-gray-900"
-            >
-              Tout ce qu&apos;il te faut pour réussir
-            </motion.h2>
-          </AnimatedSection>
-
-          <div className="grid sm:grid-cols-2 gap-3">
-            {[
-              "10 modules vidéo pas à pas",
-              "Un projet fil rouge complet",
-              "Les prompts exacts à utiliser",
-              "Accès au groupe d'entraide",
-              "Templates et ressources inclus",
-              "Support si tu bloques",
-              "Mises à jour gratuites à vie",
-              "Certificat de complétion"
-            ].map((item, i) => (
-              <AnimatedSection key={i}>
-                <motion.div variants={fadeInUp} className="flex items-center gap-3 p-4 rounded-xl bg-white border border-gray-200/60 shadow-sm hover:shadow-md hover:border-violet-200 transition-all duration-300">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-green-100">
-                    <CheckCircle className="h-5 w-5 text-green-600" />
-                  </div>
-                  <p className="text-gray-700 font-medium">{item}</p>
-                </motion.div>
-              </AnimatedSection>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ─── POURQUOI ÇA MARCHE ─── */}
-      <section className="relative py-24 px-6 bg-white">
-        <GridPattern />
-        <div className="relative mx-auto max-w-5xl">
-          <AnimatedSection>
-            <motion.p variants={fadeInUp} className="text-sm font-semibold uppercase tracking-wider text-violet-600 mb-4 text-center">
-              Pourquoi maintenant
-            </motion.p>
-            <motion.h2
-              variants={fadeInUp}
-              className="text-3xl sm:text-4xl font-bold text-center mb-6 text-gray-900"
-            >
-              L&apos;IA a changé les règles du jeu
-            </motion.h2>
-            <motion.p
-              variants={fadeInUp}
-              className="text-lg text-gray-500 text-center mb-16 max-w-2xl mx-auto"
-            >
-              Ce qui prenait des mois à un développeur prend maintenant quelques jours avec l&apos;IA. Tu arrives au bon moment.
-            </motion.p>
-          </AnimatedSection>
-
-          <div className="grid md:grid-cols-3 gap-5">
-            {[
-              {
-                icon: Zap,
-                title: "Avant : des mois d'apprentissage",
-                desc: "Apprendre HTML, CSS, JavaScript, un framework, le déploiement… Des mois avant de voir un résultat.",
-                after: "Maintenant : tu décris en français, l'IA construit. Tu vois le résultat en minutes."
-              },
-              {
-                icon: MessageSquare,
-                title: "Avant : coder ligne par ligne",
-                desc: "Chaque fonctionnalité demandait de comprendre la syntaxe, débugger, chercher sur Google…",
-                after: "Maintenant : tu expliques ce que tu veux, Claude Code écrit le code pour toi."
-              },
-              {
-                icon: Rocket,
-                title: "Avant : réservé aux développeurs",
-                desc: "Créer une application web était un métier à part entière. Inaccessible sans formation technique.",
-                after: "Maintenant : n'importe qui peut créer. Il suffit de savoir expliquer son idée."
-              }
-            ].map((item, i) => (
-              <AnimatedSection key={i}>
-                <motion.div
-                  variants={fadeInUp}
-                  className="group bg-gray-50 rounded-2xl p-7 border border-gray-100 flex flex-col hover:bg-white hover:shadow-lg hover:shadow-gray-200/50 hover:border-gray-200 transition-all duration-300"
-                >
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-violet-100 mb-5 group-hover:bg-violet-200 transition-colors">
-                    <item.icon className="h-6 w-6 text-violet-600" />
-                  </div>
-                  <h3 className="font-bold text-gray-900 mb-2">{item.title}</h3>
-                  <p className="text-sm text-gray-400 mb-5 leading-relaxed">{item.desc}</p>
-                  <div className="mt-auto pt-5 border-t border-gray-200">
-                    <p className="text-sm text-gray-700 font-semibold leading-relaxed">{item.after}</p>
-                  </div>
-                </motion.div>
-              </AnimatedSection>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ─── POUR QUI / PAS POUR QUI ─── */}
-      <section className="py-24 px-6 bg-gradient-to-b from-gray-50 to-white">
-        <div className="mx-auto max-w-4xl">
-          <AnimatedSection>
-            <motion.h2
-              variants={fadeInUp}
-              className="text-3xl sm:text-4xl font-bold text-center mb-16 text-gray-900"
-            >
-              Est-ce que c&apos;est pour toi ?
-            </motion.h2>
-          </AnimatedSection>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            <AnimatedSection>
-              <motion.div
-                variants={fadeInUp}
-                className="rounded-2xl p-8 bg-white border-2 border-green-200 shadow-sm hover:shadow-md transition-all duration-300"
-              >
-                <h3 className="text-xl font-bold text-green-700 mb-6 flex items-center gap-2">
-                  <Heart className="h-5 w-5" /> Parfait pour toi si
-                </h3>
-                <ul className="space-y-4">
-                  {[
-                    "Tu n'as jamais codé de ta vie",
-                    "Tu trouves la tech intimidante",
-                    "Tu veux créer sans passer des mois à apprendre",
-                    "Tu as une idée mais pas les moyens de la construire",
-                    "Tu veux un résultat concret, pas juste de la théorie"
-                  ].map((item, i) => (
-                    <li key={i} className="flex gap-3">
-                      <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                      <span className="text-gray-700">{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-            </AnimatedSection>
-
-            <AnimatedSection>
-              <motion.div
-                variants={fadeInUp}
-                className="rounded-2xl p-8 bg-gray-50 border-2 border-gray-200 shadow-sm"
-              >
-                <h3 className="text-xl font-bold text-gray-500 mb-6 flex items-center gap-2">
-                  <Shield className="h-5 w-5" /> Pas pour toi si
-                </h3>
-                <ul className="space-y-4">
-                  {[
-                    "Tu veux devenir développeur professionnel",
-                    "Tu cherches une formation de code classique",
-                    "Tu sais déjà coder et utiliser l'IA"
-                  ].map((item, i) => (
-                    <li key={i} className="flex gap-3">
-                      <span className="h-5 w-5 flex-shrink-0 mt-0.5 rounded-full border-2 border-gray-300" />
-                      <span className="text-gray-500">{item}</span>
-                    </li>
-                  ))}
-                </ul>
-                <p className="text-sm text-gray-400 mt-8 pt-5 border-t border-gray-200">
-                  Ici tu apprends à <strong>créer</strong>, pas à <strong>coder</strong>.
-                </p>
-              </motion.div>
-            </AnimatedSection>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── FAQ ─── */}
-      <section className="relative py-24 px-6 bg-white">
-        <GridPattern />
-        <div className="relative mx-auto max-w-3xl">
-          <AnimatedSection>
-            <motion.h2
-              variants={fadeInUp}
-              className="text-3xl sm:text-4xl font-bold text-center mb-14 text-gray-900"
-            >
-              Questions fréquentes
-            </motion.h2>
-          </AnimatedSection>
-
-          <div className="space-y-3">
-            <FAQ
-              question="Je n'ai vraiment jamais codé, c'est grave ?"
-              answer="Pas du tout, c'est même le but. La formation est conçue pour des personnes qui n'ont aucune connaissance technique. Tu vas apprendre à créer en parlant à l'IA, pas en écrivant du code."
-            />
-            <FAQ
-              question="Il me faut quoi pour commencer ?"
-              answer="Un ordinateur (Mac, Windows ou Linux) et une connexion internet. C'est tout. On t'explique tout le reste dans la formation, étape par étape."
-            />
-            <FAQ
-              question="Combien de temps par jour ça prend ?"
-              answer="Environ 1 à 2 heures par jour. Chaque module est conçu pour être digéré facilement. Tu peux aussi aller à ton rythme, l'accès est à vie."
-            />
-            <FAQ
-              question="C'est quoi Claude Code exactement ?"
-              answer="C'est un outil d'intelligence artificielle qui comprend ce que tu lui demandes en français et qui écrit le code à ta place. Tu lui dis ce que tu veux, il le construit. Comme avoir un développeur personnel."
-            />
-            <FAQ
-              question="Et si je bloque pendant la formation ?"
-              answer="Tu as accès au groupe d'entraide où tu peux poser tes questions. Et chaque module inclut les solutions aux problèmes courants. Tu ne seras jamais seul."
-            />
-          </div>
         </div>
       </section>
 
       {/* ─── CTA FINAL ─── */}
-      <section className="relative py-28 px-6 bg-gradient-to-b from-gray-950 to-gray-900 text-white overflow-hidden">
+      <section className="relative py-28 px-6 bg-gradient-to-b from-gray-950 to-gray-900 overflow-hidden">
         <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 h-[400px] w-[600px] rounded-full bg-violet-600/15 blur-[120px]" />
+        <div className="pointer-events-none absolute bottom-0 right-1/4 h-[300px] w-[400px] rounded-full bg-orange-500/10 blur-[100px]" />
         <div className="absolute inset-0" style={{
           backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.03) 1px, transparent 0)',
           backgroundSize: '32px 32px'
@@ -565,7 +734,7 @@ export default function Formation() {
           <AnimatedSection>
             <motion.div variants={fadeInUp}>
               <div className="mx-auto mb-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-violet-500/10 border border-violet-500/20">
-                <Sparkles className="h-8 w-8 text-violet-400" />
+                <Rocket className="h-8 w-8 text-violet-400" />
               </div>
             </motion.div>
 
@@ -573,30 +742,47 @@ export default function Formation() {
               variants={fadeInUp}
               className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6"
             >
-              Dans 10 jours, tu auras créé quelque chose de réel
+              Arrête de rêver de ton projet.{' '}
+              <span className="bg-gradient-to-r from-violet-400 to-orange-400 bg-clip-text text-transparent">Construis-le maintenant.</span>
             </motion.h2>
 
             <motion.p
               variants={fadeInUp}
               className="text-lg text-gray-400 mb-12 max-w-xl mx-auto leading-relaxed"
             >
-              Pas un rêve. Pas un plan. Un vrai projet, en ligne, que tu pourras montrer au monde. La seule question c&apos;est : tu commences quand ?
+              Dans 10 jours, tu pourras envoyer le lien de ton site à tes clients.
             </motion.p>
 
-            <motion.div variants={fadeInUp}>
+            <motion.div variants={fadeInUp} className="flex flex-col items-center gap-4">
               <Link
                 href="/formation/inscription"
                 onClick={() => trackCtaClick('landing formation', 'footer_cta')}
                 className="group inline-flex items-center justify-center rounded-full bg-gradient-to-r from-violet-600 to-orange-500 px-10 py-5 text-lg font-bold text-white shadow-lg shadow-violet-500/20 transition-all hover:shadow-xl hover:shadow-violet-500/30 hover:-translate-y-0.5"
               >
-                Je commence maintenant
+                Créer mon compte
                 <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
               </Link>
+              <p className="text-sm text-gray-500">
+                <span className="text-violet-400 font-semibold">1 128</span> entrepreneurs ont déjà rejoint le mouvement
+              </p>
             </motion.div>
 
           </AnimatedSection>
         </div>
       </section>
+
+      {/* ─── FOOTER ─── */}
+      <footer className="border-t border-white/5 bg-gray-950 py-10 px-6">
+        <div className="mx-auto max-w-4xl">
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-gray-600">
+            <a href="mailto:contact@iaco.app" className="hover:text-violet-400 transition-colors">Contact</a>
+            <span className="hover:text-violet-400 transition-colors cursor-default">Mentions Légales</span>
+            <span className="hover:text-violet-400 transition-colors cursor-default">Conditions générales d&apos;utilisation</span>
+            <span className="hover:text-violet-400 transition-colors cursor-default">Politique de confidentialité</span>
+            <span className="hover:text-violet-400 transition-colors cursor-default">Gestion des cookies</span>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
