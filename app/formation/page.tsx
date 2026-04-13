@@ -5,12 +5,12 @@ import { useInView } from 'framer-motion';
 import { useRef, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { trackCtaClick } from '@/lib/analytics';
+import { t, type Lang } from './translations';
 import {
-  Sparkles, CheckCircle, ArrowRight, XCircle,
-  Monitor, ChevronDown,
-  Rocket, Globe, Lock, Clock, Wallet, Database, Menu, X,
-  Quote, Users, FolderKanban,
-  LayoutDashboard, FileText, Bot
+  CheckCircle, ArrowRight, ChevronDown,
+  Users, FolderKanban, Star,
+  Receipt, Clock, Puzzle,
+  Quote, Rocket, Database, Monitor, Globe, Menu, X
 } from 'lucide-react';
 
 const fadeInUp = {
@@ -44,36 +44,28 @@ function AnimatedSection({ children, className = "" }: { children: React.ReactNo
   );
 }
 
-function FAQ({ question, answer }: { question: string; answer: string }) {
+function FAQ({ question, answer, category }: { question: string; answer: string; category?: string }) {
   const [open, setOpen] = useState(false);
   return (
     <button
       onClick={() => setOpen(!open)}
-      className="w-full text-left bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-violet-500/30 hover:bg-white/10 transition-all duration-300"
+      className="w-full text-left bg-white rounded-2xl p-6 border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all duration-300"
     >
+      {category && (
+        <span className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2 block">{category}</span>
+      )}
       <div className="flex items-center justify-between gap-4">
-        <h3 className="text-lg font-semibold text-white">{question}</h3>
+        <h3 className="text-lg font-semibold text-gray-900">{question}</h3>
         <ChevronDown className={`w-5 h-5 text-gray-400 flex-shrink-0 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
       </div>
       {open && (
-        <p className="mt-4 text-gray-400 leading-relaxed">{answer}</p>
+        <p className="mt-4 text-gray-600 leading-relaxed">{answer}</p>
       )}
     </button>
   );
 }
 
-function GridPattern() {
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      <div className="absolute inset-0" style={{
-        backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(139,92,246,0.05) 1px, transparent 0)',
-        backgroundSize: '40px 40px'
-      }} />
-    </div>
-  );
-}
-
-function Header() {
+function Header({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void }) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -84,58 +76,70 @@ function Header() {
   }, []);
 
   const navItems = [
-    { label: "Programme", href: "#programme" },
-    { label: "Témoignages", href: "#temoignages" },
-    { label: "FAQ", href: "#faq" },
+    { label: t(lang, 'nav_programme'), href: "#programme" },
+    { label: t(lang, 'nav_temoignages'), href: "#temoignages" },
+    { label: t(lang, 'nav_faq'), href: "#faq" },
   ];
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-gray-950/80 backdrop-blur-lg shadow-[0_1px_0_0_rgba(255,255,255,0.03)]' : 'bg-transparent'}`}>
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/80 backdrop-blur-lg shadow-sm' : 'bg-transparent'}`}>
       <div className="mx-auto max-w-5xl px-6 py-4 flex items-center justify-between">
-        {/* Logo */}
-        <a href="#" className="text-lg font-bold text-white">
-          Vibe <span className="bg-gradient-to-r from-violet-400 to-orange-400 bg-clip-text text-transparent">Coding</span>
+        <a href="#" className="text-lg font-bold text-gray-900">
+          Vibe<span className="text-gray-900">Code</span>
         </a>
 
-        {/* Nav desktop */}
         <nav className="hidden md:flex items-center gap-8">
           {navItems.map((item) => (
-            <a key={item.href} href={item.href} className="text-sm text-gray-400 hover:text-violet-400 transition-colors">
+            <a key={item.href} href={item.href} className="text-sm text-gray-500 hover:text-gray-900 transition-colors">
               {item.label}
             </a>
           ))}
+          <button
+            onClick={() => setLang(lang === 'fr' ? 'en' : 'fr')}
+            className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900 transition-colors"
+          >
+            <Globe className="h-4 w-4" />
+            {lang === 'fr' ? 'EN' : 'FR'}
+          </button>
         </nav>
 
-        {/* CTA desktop */}
-        <Link
-          href="/formation/inscription"
-          onClick={() => trackCtaClick('landing formation', 'header_cta')}
-          className="hidden md:inline-flex items-center justify-center rounded-full bg-gradient-to-r from-violet-600 to-orange-500 px-5 py-2 text-sm font-bold text-white transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-violet-500/20"
-        >
-          Créer mon compte
-        </Link>
+        <div className="flex items-center gap-3 md:gap-0">
+          <button
+            onClick={() => setLang(lang === 'fr' ? 'en' : 'fr')}
+            className="md:hidden flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900 transition-colors"
+          >
+            <Globe className="h-4 w-4" />
+            {lang === 'fr' ? 'EN' : 'FR'}
+          </button>
 
-        {/* Burger mobile */}
-        <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden text-white">
-          {menuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-        </button>
+          <Link
+            href="/formation/inscription"
+            onClick={() => trackCtaClick('landing formation', 'header_cta')}
+            className="hidden md:inline-flex items-center justify-center rounded-full bg-gray-900 px-5 py-2 text-sm font-semibold text-white transition-all hover:bg-gray-800"
+          >
+            {t(lang, 'nav_cta')}
+          </Link>
+
+          <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden text-gray-900">
+            {menuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
+        </div>
       </div>
 
-      {/* Menu mobile */}
       {menuOpen && (
-        <div className="md:hidden bg-gray-950/95 backdrop-blur-lg border-b border-white/5 px-6 pb-6">
+        <div className="md:hidden bg-white/95 backdrop-blur-lg border-b border-gray-100 px-6 pb-6">
           <nav className="flex flex-col gap-4">
             {navItems.map((item) => (
-              <a key={item.href} href={item.href} onClick={() => setMenuOpen(false)} className="text-sm text-gray-400 hover:text-violet-400 transition-colors">
+              <a key={item.href} href={item.href} onClick={() => setMenuOpen(false)} className="text-sm text-gray-500 hover:text-gray-900 transition-colors">
                 {item.label}
               </a>
             ))}
             <Link
               href="/formation/inscription"
               onClick={() => { trackCtaClick('landing formation', 'header_cta_mobile'); setMenuOpen(false); }}
-              className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-violet-600 to-orange-500 px-5 py-2.5 text-sm font-bold text-white mt-2"
+              className="inline-flex items-center justify-center rounded-full bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white mt-2"
             >
-              Créer mon compte
+              {t(lang, 'nav_cta')}
             </Link>
           </nav>
         </div>
@@ -145,60 +149,42 @@ function Header() {
 }
 
 export default function Formation() {
+  const [lang, setLang] = useState<Lang>('fr');
+
+  useEffect(() => {
+    const saved = localStorage.getItem('formation-lang');
+    if (saved === 'en') setLang('en');
+  }, []);
+
+  const handleSetLang = (l: Lang) => {
+    setLang(l);
+    localStorage.setItem('formation-lang', l);
+  };
+
   return (
-    <div className="min-h-screen bg-gray-950 text-white overflow-x-hidden">
-      <Header />
+    <div className="min-h-screen bg-white text-gray-900 overflow-x-hidden">
+      <Header lang={lang} setLang={handleSetLang} />
 
       {/* ─── HERO ─── */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950">
-        {/* Glow effects */}
-        <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 h-[600px] w-[800px] rounded-full bg-violet-600/20 blur-[120px]" />
-        <div className="pointer-events-none absolute bottom-0 left-1/4 h-[300px] w-[400px] rounded-full bg-orange-500/10 blur-[100px]" />
-
-        {/* Grid overlay */}
-        <div className="absolute inset-0" style={{
-          backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.03) 1px, transparent 0)',
-          backgroundSize: '32px 32px'
-        }} />
-
-        {/* Floating code decoration */}
-        <div className="absolute top-20 left-8 hidden lg:block opacity-20 select-none pointer-events-none">
-          <div className="font-mono text-xs text-violet-400 space-y-1">
-            <p><span className="text-pink-400">const</span> business = <span className="text-green-400">&quot;mon-saas&quot;</span>;</p>
-            <p><span className="text-pink-400">await</span> claude.<span className="text-amber-400">build</span>(business);</p>
-          </div>
-        </div>
-        <div className="absolute bottom-32 right-8 hidden lg:block opacity-20 select-none pointer-events-none">
-          <div className="font-mono text-xs text-violet-400 space-y-1">
-            <p><span className="text-green-400">// Ton SaaS est en ligne</span></p>
-            <p>app.<span className="text-amber-400">deploy</span>(<span className="text-green-400">&quot;production&quot;</span>);</p>
-          </div>
-        </div>
-
-        <div className="relative mx-auto max-w-4xl px-6 pt-24 pb-20 text-center">
+      <section className="relative pt-32 pb-20 px-6">
+        <div className="relative mx-auto max-w-3xl text-center">
           <AnimatedSection>
-            <motion.div variants={fadeInUp} className="mb-8">
-              <span className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-sm px-5 py-2.5 text-sm font-medium text-violet-300 border border-white/10">
-                <Sparkles className="h-4 w-4 text-amber-400" />
-                Formation Vibe Coding — 100% avec l&apos;IA
-              </span>
-            </motion.div>
-
             <motion.h1
               variants={fadeInUp}
-              className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-[1.08] tracking-tight text-white"
+              className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-[1.1] tracking-tight text-gray-900"
             >
-              Lance ton side business en
-              <span className="bg-gradient-to-r from-violet-400 via-purple-400 to-orange-400 bg-clip-text text-transparent"> 10 jours</span>.
-              <br />
-              <span className="text-gray-500 text-2xl sm:text-3xl md:text-4xl font-bold">Pas dans 6 mois.</span>
+              {t(lang, 'hero_title_prefix')}
+              <span className="relative">
+                <span className="relative z-10">{t(lang, 'hero_title_highlight')}</span>
+                <span className="absolute bottom-1 left-0 right-0 h-3 bg-orange-200/60 -z-0 rounded-sm" />
+              </span>.
             </motion.h1>
 
             <motion.p
               variants={fadeInUp}
-              className="mx-auto mt-8 max-w-2xl text-lg sm:text-xl text-gray-400 leading-relaxed"
+              className="mx-auto mt-8 max-w-2xl text-lg sm:text-xl text-gray-500 leading-relaxed"
             >
-              Tu as l&apos;idée. L&apos;IA a les bras. Apprends à bâtir des SaaS et des outils web rentables sans écrire une seule ligne de code.
+              {t(lang, 'hero_subtitle')}
             </motion.p>
 
             <motion.div
@@ -208,34 +194,36 @@ export default function Formation() {
               <Link
                 href="/formation/inscription"
                 onClick={() => trackCtaClick('landing formation', 'hero_cta')}
-                className="group inline-flex items-center justify-center rounded-full bg-gradient-to-r from-violet-600 to-orange-500 px-8 py-4 text-lg font-bold text-white shadow-lg shadow-violet-500/20 transition-all hover:shadow-xl hover:shadow-violet-500/30 hover:-translate-y-0.5"
+                className="group inline-flex items-center justify-center rounded-full bg-gray-900 px-8 py-4 text-lg font-semibold text-white transition-all hover:bg-gray-800 hover:shadow-lg"
               >
-                Créer mon compte
+                {t(lang, 'hero_cta')}
                 <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
               </Link>
-              <p className="text-sm text-gray-500">
-                <span className="text-violet-400 font-semibold">1 128</span> entrepreneurs ont déjà rejoint le mouvement
+              <p className="text-sm text-gray-400">
+                {t(lang, 'hero_social_prefix')}<span className="text-gray-600 font-semibold">1 128</span>{t(lang, 'hero_social_suffix')}
               </p>
             </motion.div>
           </AnimatedSection>
         </div>
       </section>
 
-      {/* ─── SOCIAL PROOF FLASH ─── */}
-      <section className="relative border-y border-white/5 bg-gray-900/50">
-        <div className="mx-auto max-w-4xl px-6 py-6">
+      {/* ─── SOCIAL PROOF STATS ─── */}
+      <section className="py-12 px-6 border-y border-gray-100">
+        <div className="mx-auto max-w-3xl">
           <AnimatedSection>
-            <motion.div variants={fadeInUp} className="flex flex-wrap items-center justify-center gap-8 sm:gap-16 text-center">
+            <motion.p variants={fadeInUp} className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400 mb-8">
+              {t(lang, 'stats_label')}
+            </motion.p>
+            <motion.div variants={fadeInUp} className="grid grid-cols-3 gap-6 text-center">
               {[
-                { icon: Users, value: "50", label: "Bêta-testeurs" },
-                { icon: FolderKanban, value: "112", label: "Projets lancés" }
+                { icon: Users, value: "1 128", label: t(lang, 'stat_members') },
+                { icon: FolderKanban, value: "112", label: t(lang, 'stat_activities') },
+                { icon: Star, value: "50", label: t(lang, 'stat_reviews') }
               ].map((stat, i) => (
-                <div key={i} className="flex items-center gap-3">
-                  <stat.icon className="h-5 w-5 text-violet-400" />
-                  <div>
-                    <p className="text-xl font-bold text-white">{stat.value}</p>
-                    <p className="text-xs text-gray-500">{stat.label}</p>
-                  </div>
+                <div key={i} className="flex flex-col items-center gap-2">
+                  <stat.icon className="h-5 w-5 text-gray-300" />
+                  <p className="text-2xl sm:text-3xl font-extrabold text-gray-900">{stat.value}</p>
+                  <p className="text-xs sm:text-sm text-gray-400">{stat.label}</p>
                 </div>
               ))}
             </motion.div>
@@ -244,42 +232,40 @@ export default function Formation() {
       </section>
 
       {/* ─── LE PROBLÈME ─── */}
-      <section className="relative py-24 px-6 bg-gradient-to-b from-gray-900 to-gray-900/80">
-        <GridPattern />
-        <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 h-[200px] w-[600px] rounded-full bg-violet-600/5 blur-[100px]" />
+      <section className="relative py-24 px-6 bg-gray-50">
         <div className="relative mx-auto max-w-3xl">
           <AnimatedSection>
-            <motion.p variants={fadeInUp} className="text-sm font-semibold uppercase tracking-wider text-amber-400 mb-4 text-center">
-              Le problème
+            <motion.p variants={fadeInUp} className="text-sm font-semibold uppercase tracking-wider text-gray-400 mb-4 text-center">
+              {t(lang, 'problem_label')}
             </motion.p>
             <motion.h2
               variants={fadeInUp}
-              className="text-3xl sm:text-4xl font-bold mb-6 text-center"
+              className="text-3xl sm:text-4xl font-bold mb-6 text-center text-gray-900"
             >
-              Pourquoi 90% des entrepreneurs n&apos;envoient jamais leur projet ?
+              {t(lang, 'problem_title')}
             </motion.h2>
-            <motion.p variants={fadeInUp} className="text-lg text-gray-400 mb-14 text-center">
-              Tu as une idée géniale. Tu es motivé. Mais dès qu&apos;il s&apos;agit de concrétiser, tu te retrouves face à un mur :
+            <motion.p variants={fadeInUp} className="text-lg text-gray-500 mb-14 text-center max-w-2xl mx-auto">
+              {t(lang, 'problem_intro')}
             </motion.p>
           </AnimatedSection>
 
           <div className="grid gap-4">
             {[
-              { icon: Lock, title: "Le mur technique", desc: "\"Je ne sais pas coder, je dois trouver un associé.\"" },
-              { icon: Wallet, title: "Le mur financier", desc: "\"Les agences me demandent 5 000€ pour un MVP.\"" },
-              { icon: Clock, title: "Le mur du temps", desc: "\"Apprendre le Python ? J'ai un job, je ne peux pas y passer 2 ans.\"" }
+              { icon: Receipt, title: t(lang, 'problem_card1_title'), desc: t(lang, 'problem_card1_desc') },
+              { icon: Clock, title: t(lang, 'problem_card2_title'), desc: t(lang, 'problem_card2_desc') },
+              { icon: Puzzle, title: t(lang, 'problem_card3_title'), desc: t(lang, 'problem_card3_desc') }
             ].map((item, i) => (
               <AnimatedSection key={i}>
                 <motion.div
                   variants={fadeInUp}
-                  className="group flex items-start gap-5 bg-gray-800/50 rounded-2xl p-6 border border-gray-700/50 hover:border-amber-500/30 hover:bg-gray-800/70 transition-all duration-300"
+                  className="group flex items-start gap-5 bg-white rounded-2xl p-6 border border-gray-200 hover:shadow-md transition-all duration-300"
                 >
-                  <div className="flex-shrink-0 flex h-12 w-12 items-center justify-center rounded-xl bg-amber-500/10 border border-amber-500/20">
-                    <item.icon className="h-6 w-6 text-amber-400" />
+                  <div className="flex-shrink-0 flex h-12 w-12 items-center justify-center rounded-xl bg-orange-50 border border-orange-100">
+                    <item.icon className="h-6 w-6 text-orange-500" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-white text-lg mb-1">{item.title}</h3>
-                    <p className="text-gray-400 italic">{item.desc}</p>
+                    <h3 className="font-bold text-gray-900 text-lg mb-1">{item.title}</h3>
+                    <p className="text-gray-500">{item.desc}</p>
                   </div>
                 </motion.div>
               </AnimatedSection>
@@ -287,69 +273,70 @@ export default function Formation() {
           </div>
 
           <AnimatedSection>
-            <motion.p variants={fadeInUp} className="text-center text-lg text-gray-500 mt-10 font-medium">
-              Résultat : <span className="text-white">Ton idée meurt dans un coin de ton cerveau.</span> C&apos;est fini.
+            <motion.p variants={fadeInUp} className="text-center text-lg text-gray-400 mt-10 font-medium">
+              {t(lang, 'problem_result_prefix')}<span className="text-gray-900 font-semibold">{t(lang, 'problem_result_bold')}</span>
             </motion.p>
           </AnimatedSection>
+        </div>
+      </section>
 
-          {/* Témoignage Léa */}
+      {/* ─── TÉMOIGNAGE STÉPHANE ─── */}
+      <section className="py-16 px-6 bg-white">
+        <div className="mx-auto max-w-3xl">
           <AnimatedSection>
-            <motion.div variants={fadeInUp} className="mt-14 bg-white/5 rounded-2xl p-8 border border-violet-500/20 relative">
-              <Quote className="absolute top-4 left-4 h-8 w-8 text-violet-500/20" />
-              <p className="text-gray-300 leading-relaxed italic pl-8">
-                &quot;J&apos;ai toujours été nul en code. Ici, je ne code pas, je décris. Résultat : mon annuaire IA a atteint 850 visiteurs en 24h. C&apos;est du Vibe Coding pur.&quot;
+            <motion.div variants={fadeInUp} className="bg-gray-50 rounded-2xl p-8 sm:p-10 border border-gray-200 relative">
+              <Quote className="absolute top-6 left-6 h-8 w-8 text-gray-200" />
+              <p className="text-sm font-semibold text-orange-500 mb-4 pl-10">{t(lang, 'testimonial_stephane_tag')}</p>
+              <p className="text-gray-700 leading-relaxed pl-10 text-lg">
+                {t(lang, 'testimonial_stephane_quote_prefix')}<span className="font-semibold text-gray-900">{t(lang, 'testimonial_stephane_highlight')}</span>&quot;
               </p>
-              <p className="mt-4 text-sm text-violet-400 font-semibold pl-8">— Léa, fondatrice de AI-Directory</p>
+              <div className="mt-6 pl-10 flex items-center gap-3">
+                <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-sm font-bold text-gray-500">SR</div>
+                <div>
+                  <p className="font-semibold text-gray-900">{t(lang, 'testimonial_stephane_name')}</p>
+                  <p className="text-sm text-gray-400">{t(lang, 'testimonial_stephane_role')}</p>
+                </div>
+              </div>
             </motion.div>
           </AnimatedSection>
         </div>
       </section>
 
-      {/* ─── OLD VS NEW (LA MÉTHODE) ─── */}
-      <section className="relative py-24 px-6 bg-gray-900">
-        <div className="absolute inset-0" style={{
-          backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.02) 1px, transparent 0)',
-          backgroundSize: '32px 32px'
-        }} />
-        <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[400px] w-[600px] rounded-full bg-violet-600/10 blur-[120px]" />
-
+      {/* ─── LA MÉTHODE : OLD VS NEW ─── */}
+      <section className="relative py-24 px-6 bg-white">
         <div className="relative mx-auto max-w-4xl">
           <AnimatedSection>
-            <motion.p variants={fadeInUp} className="text-sm font-semibold uppercase tracking-wider text-violet-400 mb-4 text-center">
-              La méthode
+            <motion.p variants={fadeInUp} className="text-sm font-semibold uppercase tracking-wider text-gray-400 mb-4 text-center">
+              {t(lang, 'method_label')}
             </motion.p>
             <motion.h2
               variants={fadeInUp}
-              className="text-3xl sm:text-4xl font-bold text-center mb-4"
+              className="text-3xl sm:text-4xl font-bold text-center mb-4 text-gray-900"
             >
-              Le code classique est mort pour les entrepreneurs.
+              {t(lang, 'method_title')}
             </motion.h2>
             <motion.p
               variants={fadeInUp}
-              className="text-lg text-gray-400 text-center mb-16 max-w-2xl mx-auto"
+              className="text-lg text-gray-500 text-center mb-16 max-w-2xl mx-auto"
             >
-              Les écoles de code t&apos;apprennent à devenir un employé. Moi, je t&apos;apprends à devenir un <span className="text-violet-400 font-semibold">Maker</span>.
+              {t(lang, 'method_subtitle')}
             </motion.p>
           </AnimatedSection>
 
-          {/* Comparison Table */}
           <AnimatedSection>
             <motion.div variants={fadeInUp} className="grid md:grid-cols-2 gap-4">
               {/* Old Way */}
-              <div className="rounded-2xl p-8 bg-white/5 border border-white/10">
-                <h3 className="text-lg font-bold text-gray-400 mb-6 flex items-center gap-2">
-                  <XCircle className="h-5 w-5 text-gray-500" />
-                  L&apos;ancienne école <span className="text-xs text-gray-600">(Udemy/Bootcamps)</span>
-                </h3>
+              <div className="rounded-2xl p-8 bg-gray-50 border border-gray-200">
+                <h3 className="text-lg font-bold text-gray-400 mb-6">{t(lang, 'method_old_title')}</h3>
                 <ul className="space-y-5">
                   {[
-                    "6 mois pour comprendre le JavaScript",
-                    "Apprendre à trier des listes (inutile)",
-                    "Coût : 8 000€ ou 100h de vidéos",
-                    "Tu abandonnes au bout de 2 semaines"
+                    t(lang, 'method_old_1'),
+                    t(lang, 'method_old_2'),
+                    t(lang, 'method_old_3'),
+                    t(lang, 'method_old_4')
                   ].map((item, i) => (
-                    <li key={i} className="flex gap-3 text-gray-500 line-through decoration-gray-700">
-                      <span className="text-gray-600 flex-shrink-0">✕</span>
+                    <li key={i} className="flex gap-3 text-gray-400 line-through decoration-gray-300">
+                      <span className="text-gray-300 flex-shrink-0">✕</span>
                       {item}
                     </li>
                   ))}
@@ -357,20 +344,17 @@ export default function Formation() {
               </div>
 
               {/* New Way */}
-              <div className="rounded-2xl p-8 bg-violet-500/10 border border-violet-500/20">
-                <h3 className="text-lg font-bold text-violet-300 mb-6 flex items-center gap-2">
-                  <Sparkles className="h-5 w-5 text-violet-400" />
-                  La méthode Vibe Coding <span className="text-xs text-violet-500">(IA)</span>
-                </h3>
+              <div className="rounded-2xl p-8 bg-white border-2 border-gray-900">
+                <h3 className="text-lg font-bold text-gray-900 mb-6">{t(lang, 'method_new_title')}</h3>
                 <ul className="space-y-5">
                   {[
-                    "10 jours pour lancer ton application",
-                    "Apprendre à générer des revenus",
-                    "Coût : Le prix d'un café par jour",
-                    "Tu vois ton app prendre vie en 30 min"
+                    t(lang, 'method_new_1'),
+                    t(lang, 'method_new_2'),
+                    t(lang, 'method_new_3'),
+                    t(lang, 'method_new_4')
                   ].map((item, i) => (
-                    <li key={i} className="flex gap-3 text-gray-200">
-                      <CheckCircle className="h-5 w-5 text-violet-400 flex-shrink-0" />
+                    <li key={i} className="flex gap-3 text-gray-700">
+                      <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
                       {item}
                     </li>
                   ))}
@@ -381,37 +365,31 @@ export default function Formation() {
         </div>
       </section>
 
-      {/* ─── TON HISTOIRE : LE DÉCLIC ─── */}
-      <section className="relative py-24 px-6 bg-gray-950">
-        <GridPattern />
-        <div className="pointer-events-none absolute top-0 right-0 h-[400px] w-[400px] rounded-full bg-orange-500/10 blur-[120px]" />
-
+      {/* ─── LE DÉCLIC (STORYTELLING) ─── */}
+      <section className="relative py-24 px-6 bg-gray-50">
         <div className="relative mx-auto max-w-3xl">
           <AnimatedSection>
-            <motion.p variants={fadeInUp} className="text-sm font-semibold uppercase tracking-wider text-orange-400 mb-4 text-center">
-              Le déclic
+            <motion.p variants={fadeInUp} className="text-sm font-semibold uppercase tracking-wider text-gray-400 mb-4 text-center">
+              {t(lang, 'declic_label')}
             </motion.p>
             <motion.h2
               variants={fadeInUp}
-              className="text-3xl sm:text-4xl font-bold text-center mb-12"
+              className="text-3xl sm:text-4xl font-bold text-center mb-12 text-gray-900"
             >
-              J&apos;avais une idée, mais mon &quot;associé technique&quot; a disparu.
+              {t(lang, 'declic_title')}
             </motion.h2>
           </AnimatedSection>
 
           <AnimatedSection>
-            <motion.div variants={fadeInUp} className="space-y-6 text-lg text-gray-400 leading-relaxed">
+            <motion.div variants={fadeInUp} className="space-y-6 text-lg text-gray-600 leading-relaxed">
               <p>
-                Il y a quelques mois, j&apos;étais comme toi. J&apos;avais un projet de SaaS, un co-fondateur technique... et du jour au lendemain, <span className="text-white font-semibold">plus de nouvelles</span>. Il a arrêté de me répondre.
+                {t(lang, 'declic_p1')}
               </p>
               <p>
-                J&apos;étais bloqué. Je ne savais pas coder.
+                {t(lang, 'declic_p2_prefix')}<span className="font-semibold text-gray-900">{t(lang, 'declic_p2_claude')}</span>{t(lang, 'declic_p2_middle')}<span className="font-semibold text-gray-900">{t(lang, 'declic_p2_tools')}</span>{t(lang, 'declic_p2_suffix')}
               </p>
               <p>
-                Au lieu d&apos;abandonner, j&apos;ai utilisé <span className="text-violet-400 font-semibold">Claude Code</span>. En 3 semaines, j&apos;ai lancé <span className="text-white font-semibold">4 sites</span>. J&apos;ai généré <span className="text-white font-semibold">10 000 vues</span>. Des gens ont commencé à me demander : &quot;Comment tu as fait ça sans dev ?&quot;.
-              </p>
-              <p className="text-xl text-white font-bold">
-                La réponse : Je ne code pas, je vibe. Je décris, l&apos;IA construit.
+                {t(lang, 'declic_p3_prefix')}<span className="font-semibold text-gray-900">{t(lang, 'declic_p3_bold')}</span>
               </p>
             </motion.div>
           </AnimatedSection>
@@ -419,78 +397,69 @@ export default function Formation() {
       </section>
 
       {/* ─── PROGRAMME 10 JOURS ─── */}
-      <section id="programme" className="relative py-24 px-6 bg-gray-900 scroll-mt-20">
-        <div className="absolute inset-0" style={{
-          backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.02) 1px, transparent 0)',
-          backgroundSize: '32px 32px'
-        }} />
-
+      <section id="programme" className="relative py-24 px-6 bg-white scroll-mt-20">
         <div className="relative mx-auto max-w-4xl">
           <AnimatedSection>
-            <motion.p variants={fadeInUp} className="text-sm font-semibold uppercase tracking-wider text-violet-400 mb-4 text-center">
-              Le programme
+            <motion.p variants={fadeInUp} className="text-sm font-semibold uppercase tracking-wider text-gray-400 mb-4 text-center">
+              {t(lang, 'programme_label')}
             </motion.p>
             <motion.h2
               variants={fadeInUp}
-              className="text-3xl sm:text-4xl font-bold text-center mb-4"
+              className="text-3xl sm:text-4xl font-bold text-center mb-4 text-gray-900"
             >
-              10 jours pour lancer
+              {t(lang, 'programme_title')}
             </motion.h2>
             <motion.p
               variants={fadeInUp}
-              className="text-lg text-gray-400 text-center mb-16"
+              className="text-lg text-gray-500 text-center mb-16"
             >
-              Pas de blabla. Que du concret.
+              {t(lang, 'programme_subtitle')}
             </motion.p>
           </AnimatedSection>
 
           <div className="space-y-4">
             {[
               {
-                days: "Jour 1–2",
-                title: "Le Setup de Guerre",
-                desc: "Installation de Claude Code et ton premier \"Hello World\" en 15 minutes.",
+                days: t(lang, 'programme_day1_days'),
+                title: t(lang, 'programme_day1_title'),
+                desc: t(lang, 'programme_day1_desc'),
                 icon: Rocket,
-                gradient: "from-violet-500 to-violet-600"
               },
               {
-                days: "Jour 3–5",
-                title: "Création de la machine",
-                desc: "Base de données, authentification, logique métier. Tu parles en français, l'IA exécute.",
+                days: t(lang, 'programme_day2_days'),
+                title: t(lang, 'programme_day2_title'),
+                desc: t(lang, 'programme_day2_desc'),
                 icon: Database,
-                gradient: "from-purple-500 to-purple-600"
               },
               {
-                days: "Jour 6–8",
-                title: "Design & Expérience",
-                desc: "On rend ton app sexy et professionnelle pour qu'elle soit prête à être vendue.",
+                days: t(lang, 'programme_day3_days'),
+                title: t(lang, 'programme_day3_title'),
+                desc: t(lang, 'programme_day3_desc'),
                 icon: Monitor,
-                gradient: "from-orange-500 to-orange-600"
               },
               {
-                days: "Jour 9–10",
-                title: "Mise en ligne & Cash",
-                desc: "On déploie sur le web et on configure les premiers paiements.",
+                days: t(lang, 'programme_day4_days'),
+                title: t(lang, 'programme_day4_title'),
+                desc: t(lang, 'programme_day4_desc'),
                 icon: Globe,
-                gradient: "from-green-500 to-emerald-600"
               }
             ].map((item, i) => (
               <AnimatedSection key={i}>
                 <motion.div
                   variants={fadeInUp}
-                  className="group flex items-start gap-5 bg-white/5 rounded-2xl p-6 border border-white/10 hover:bg-white/[0.07] hover:border-violet-500/30 transition-all duration-300"
+                  className="group flex items-start gap-5 bg-white rounded-2xl p-6 border border-gray-200 hover:shadow-md transition-all duration-300"
                 >
-                  <div className={`flex-shrink-0 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${item.gradient} shadow-lg`}>
-                    <item.icon className="h-6 w-6 text-white" />
+                  <div className="flex-shrink-0 flex h-12 w-12 items-center justify-center rounded-xl bg-gray-900 text-white">
+                    <item.icon className="h-6 w-6" />
                   </div>
                   <div className="flex-1">
                     <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-1">
-                      <span className="text-xs font-bold font-mono uppercase tracking-wider text-violet-400 bg-violet-500/10 px-2.5 py-1 rounded-md w-fit border border-violet-500/20">
+                      <span className="text-xs font-bold font-mono uppercase tracking-wider text-gray-400 bg-gray-100 px-2.5 py-1 rounded-md w-fit">
                         {item.days}
                       </span>
-                      <h3 className="font-bold text-white text-lg">{item.title}</h3>
+                      <h3 className="font-bold text-gray-900 text-lg">{item.title}</h3>
                     </div>
-                    <p className="text-gray-400 mt-1">{item.desc}</p>
+                    <p className="text-gray-500 mt-1">{item.desc}</p>
                   </div>
                 </motion.div>
               </AnimatedSection>
@@ -500,286 +469,190 @@ export default function Formation() {
       </section>
 
       {/* ─── TÉMOIGNAGES ─── */}
-      <section id="temoignages" className="relative py-24 px-6 bg-gray-950 scroll-mt-20">
-        <GridPattern />
-        <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[400px] w-[600px] rounded-full bg-violet-600/10 blur-[120px]" />
-
+      <section id="temoignages" className="relative py-24 px-6 bg-gray-50 scroll-mt-20">
         <div className="relative mx-auto max-w-5xl">
           <AnimatedSection>
-            <motion.p variants={fadeInUp} className="text-sm font-semibold uppercase tracking-wider text-violet-400 mb-4 text-center">
-              Ce qu&apos;ils ont bâti
+            <motion.p variants={fadeInUp} className="text-sm font-semibold uppercase tracking-wider text-gray-400 mb-4 text-center">
+              {t(lang, 'temoignages_label')}
             </motion.p>
             <motion.h2
               variants={fadeInUp}
-              className="text-3xl sm:text-4xl font-bold text-center mb-16"
+              className="text-3xl sm:text-4xl font-bold text-center mb-16 text-gray-900"
             >
-              Ils ont lancé. À ton tour.
+              {t(lang, 'temoignages_title')}
             </motion.h2>
           </AnimatedSection>
 
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid md:grid-cols-2 gap-5">
             {[
               {
-                quote: "J'ai lancé mon annuaire d'IA en 10 jours. J'ai déjà fait mes 3 premières ventes sur Stripe. C'est irréel.",
-                name: "Thomas B.",
-                project: "A bâti ToolFinder",
-                tag: "\"Je pensais que c'était réservé aux génies.\""
+                quote: t(lang, 'temoignage1_quote'),
+                name: t(lang, 'temoignage1_name'),
+                project: t(lang, 'temoignage1_project'),
+                tag: t(lang, 'temoignage1_tag'),
+                initials: "MA"
               },
               {
-                quote: "J'ai testé Bubble et Webflow, c'était trop limité. Avec cette formation, je crée des vraies apps complexes sans limite.",
-                name: "Marc-Antoine",
-                project: "A bâti SaaS-Template",
-                tag: "\"Le futur du No-Code.\""
+                quote: t(lang, 'temoignage2_quote'),
+                name: t(lang, 'temoignage2_name'),
+                project: t(lang, 'temoignage2_project'),
+                tag: t(lang, 'temoignage2_tag'),
+                initials: "MD"
               },
               {
-                quote: "Je payais un dev 400€ par mois pour des petites modifs. Avec Claude Code, je les fais moi-même en 2 minutes. C'est le meilleur investissement de mon année.",
-                name: "Lucas D.",
-                project: "SaaS de Fitness",
-                tag: "\"J'ai viré mon dev freelance.\""
+                quote: t(lang, 'temoignage3_quote'),
+                name: t(lang, 'temoignage3_name'),
+                project: t(lang, 'temoignage3_project'),
+                tag: t(lang, 'temoignage3_tag'),
+                initials: "OC"
               },
               {
-                quote: "Les cours classiques sont d'un ennui mortel. Ici, on build, on ship, on encaisse. C'est tout ce qui m'importe.",
-                name: "Kevin M.",
-                project: "Indie Hacker",
-                tag: "\"Enfin une formation pour les business.\""
+                quote: t(lang, 'temoignage4_quote'),
+                name: t(lang, 'temoignage4_name'),
+                project: t(lang, 'temoignage4_project'),
+                tag: t(lang, 'temoignage4_tag'),
+                initials: "SP"
               }
             ].map((item, i) => (
               <AnimatedSection key={i}>
                 <motion.div
                   variants={fadeInUp}
-                  className="bg-white/5 rounded-2xl p-7 border border-white/10 hover:border-violet-500/20 transition-all duration-300 flex flex-col"
+                  className="bg-white rounded-2xl p-7 border border-gray-200 hover:shadow-md transition-all duration-300 flex flex-col"
                 >
-                  <p className="text-sm font-semibold text-violet-400 mb-3">{item.tag}</p>
-                  <Quote className="h-6 w-6 text-violet-500/30 mb-3" />
-                  <p className="text-gray-300 leading-relaxed flex-1 italic">&quot;{item.quote}&quot;</p>
-                  <div className="mt-5 pt-5 border-t border-white/10">
-                    <p className="font-bold text-white">{item.name}</p>
-                    <p className="text-sm text-gray-500">{item.project}</p>
+                  <p className="text-sm font-semibold text-gray-900 mb-4">&quot;{item.tag}&quot;</p>
+                  <p className="text-gray-600 leading-relaxed flex-1">&quot;{item.quote}&quot;</p>
+                  <div className="mt-6 pt-5 border-t border-gray-100 flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center text-sm font-bold text-gray-500">{item.initials}</div>
+                    <div>
+                      <p className="font-semibold text-gray-900">{item.name}</p>
+                      <p className="text-sm text-gray-400">{item.project}</p>
+                    </div>
                   </div>
                 </motion.div>
               </AnimatedSection>
             ))}
           </div>
-        </div>
-      </section>
 
-      {/* ─── C'EST POUR QUI ─── */}
-      <section className="relative py-24 px-6 bg-gray-900">
-        <div className="absolute inset-0" style={{
-          backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.02) 1px, transparent 0)',
-          backgroundSize: '32px 32px'
-        }} />
-
-        <div className="relative mx-auto max-w-4xl">
+          {/* Témoignage Valérie */}
           <AnimatedSection>
-            <motion.h2
-              variants={fadeInUp}
-              className="text-3xl sm:text-4xl font-bold text-center mb-16"
-            >
-              C&apos;est pour toi ?
-            </motion.h2>
+            <motion.div variants={fadeInUp} className="mt-6 bg-white rounded-2xl p-8 sm:p-10 border border-gray-200 relative">
+              <Quote className="absolute top-6 left-6 h-8 w-8 text-gray-200" />
+              <p className="text-sm font-semibold text-orange-500 mb-4 pl-10">{t(lang, 'temoignage_valerie_tag')}</p>
+              <p className="text-gray-700 leading-relaxed pl-10 text-lg">
+                {t(lang, 'temoignage_valerie_quote_prefix')}<span className="font-semibold text-gray-900">{t(lang, 'temoignage_valerie_highlight')}</span>{t(lang, 'temoignage_valerie_suffix')}
+              </p>
+              <div className="mt-6 pl-10 flex items-center gap-3">
+                <div className="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center text-sm font-bold text-gray-500">VM</div>
+                <div>
+                  <p className="font-semibold text-gray-900">{t(lang, 'temoignage_valerie_name')}</p>
+                  <p className="text-sm text-gray-400">{t(lang, 'temoignage_valerie_role')}</p>
+                </div>
+              </div>
+            </motion.div>
           </AnimatedSection>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            <AnimatedSection>
-              <motion.div
-                variants={fadeInUp}
-                className="rounded-2xl p-8 bg-green-500/5 border border-green-500/20 h-full"
-              >
-                <h3 className="text-xl font-bold text-green-400 mb-6 flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5" /> C&apos;est pour toi si
-                </h3>
-                <ul className="space-y-4">
-                  {[
-                    "Tu as des idées de business plein la tête mais tu es bloqué par la tech.",
-                    "Tu es fatigué de chercher un \"associé technique\" qui ne vient jamais.",
-                    "Tu veux tester un marché rapidement sans dépenser des milliers d'euros."
-                  ].map((item, i) => (
-                    <li key={i} className="flex gap-3">
-                      <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                      <span className="text-gray-300">{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-            </AnimatedSection>
-
-            <AnimatedSection>
-              <motion.div
-                variants={fadeInUp}
-                className="rounded-2xl p-8 bg-white/5 border border-white/10 h-full"
-              >
-                <h3 className="text-xl font-bold text-gray-500 mb-6 flex items-center gap-2">
-                  <XCircle className="h-5 w-5" /> Ce n&apos;est PAS pour toi si
-                </h3>
-                <ul className="space-y-4">
-                  {[
-                    "Tu veux devenir développeur salarié chez Google.",
-                    "Tu aimes passer 4 heures à chercher une virgule manquante dans ton code."
-                  ].map((item, i) => (
-                    <li key={i} className="flex gap-3">
-                      <span className="h-5 w-5 flex-shrink-0 mt-0.5 rounded-full border-2 border-gray-600" />
-                      <span className="text-gray-500">{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-            </AnimatedSection>
-          </div>
         </div>
       </section>
 
       {/* ─── FAQ ─── */}
-      <section id="faq" className="relative py-24 px-6 bg-gray-950 scroll-mt-20">
-        <GridPattern />
+      <section id="faq" className="relative py-24 px-6 bg-white scroll-mt-20">
         <div className="relative mx-auto max-w-3xl">
           <AnimatedSection>
             <motion.h2
               variants={fadeInUp}
-              className="text-3xl sm:text-4xl font-bold text-center mb-14"
+              className="text-3xl sm:text-4xl font-bold text-center mb-14 text-gray-900"
             >
-              Questions fréquentes
+              {t(lang, 'faq_title')}
             </motion.h2>
           </AnimatedSection>
 
           <div className="space-y-3">
             <FAQ
-              question="Est-ce que je dois avoir des bases ?"
-              answer="Non. Si tu sais écrire un mail, tu sais utiliser Claude Code."
+              category={t(lang, 'faq1_category')}
+              question={t(lang, 'faq1_question')}
+              answer={t(lang, 'faq1_answer')}
             />
             <FAQ
-              question="Combien de temps ça prend ?"
-              answer="1h par jour pendant 10 jours suffit pour voir ton projet en ligne."
+              category={t(lang, 'faq2_category')}
+              question={t(lang, 'faq2_question')}
+              answer={t(lang, 'faq2_answer')}
             />
             <FAQ
-              question="C'est quoi la différence avec le No-Code ?"
-              answer="Le No-Code est limité par des blocs. Ici, tu as la puissance du vrai code, mais c'est l'IA qui le rédige pour toi."
+              category={t(lang, 'faq3_category')}
+              question={t(lang, 'faq3_question')}
+              answer={t(lang, 'faq3_answer')}
+            />
+            <FAQ
+              category={t(lang, 'faq4_category')}
+              question={t(lang, 'faq4_question')}
+              answer={t(lang, 'faq4_answer')}
+            />
+            <FAQ
+              category={t(lang, 'faq5_category')}
+              question={t(lang, 'faq5_question')}
+              answer={t(lang, 'faq5_answer')}
+            />
+            <FAQ
+              category={t(lang, 'faq6_category')}
+              question={t(lang, 'faq6_question')}
+              answer={t(lang, 'faq6_answer')}
+            />
+            <FAQ
+              category={t(lang, 'faq7_category')}
+              question={t(lang, 'faq7_question')}
+              answer={t(lang, 'faq7_answer')}
             />
           </div>
-        </div>
-      </section>
-
-      {/* ─── CE QUE TU VAS CONSTRUIRE ─── */}
-      <section className="relative py-24 px-6 bg-gray-900">
-        <div className="absolute inset-0" style={{
-          backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.02) 1px, transparent 0)',
-          backgroundSize: '32px 32px'
-        }} />
-        <div className="pointer-events-none absolute bottom-0 left-1/4 h-[300px] w-[400px] rounded-full bg-orange-500/10 blur-[100px]" />
-
-        <div className="relative mx-auto max-w-5xl">
-          <AnimatedSection>
-            <motion.p variants={fadeInUp} className="text-sm font-semibold uppercase tracking-wider text-violet-400 mb-4 text-center">
-              Exemples concrets
-            </motion.p>
-            <motion.h2
-              variants={fadeInUp}
-              className="text-3xl sm:text-4xl font-bold text-center mb-6"
-            >
-              Qu&apos;est-ce que tu vas construire ?
-            </motion.h2>
-            <motion.p
-              variants={fadeInUp}
-              className="text-lg text-gray-400 text-center mb-16 max-w-2xl mx-auto"
-            >
-              Voici des exemples de ce que nos membres ont lancé en moins de 10 jours :
-            </motion.p>
-          </AnimatedSection>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {[
-              { icon: Bot, title: "Un SaaS IA", desc: "Un outil qui génère des posts LinkedIn automatiquement." },
-              { icon: Globe, title: "Un Annuaire", desc: "La liste des meilleurs restaurants de Paris filtrée par IA." },
-              { icon: LayoutDashboard, title: "Un Outil Productivité", desc: "Un dashboard personnel pour gérer tes finances." },
-              { icon: FileText, title: "Une Landing Page", desc: "Exactement comme celle-ci, mais pour ton produit." }
-            ].map((item, i) => (
-              <AnimatedSection key={i}>
-                <motion.div
-                  variants={fadeInUp}
-                  className="text-center p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-violet-500/20 hover:bg-white/[0.07] transition-all duration-300"
-                >
-                  <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-500/10 border border-violet-500/20">
-                    <item.icon className="h-7 w-7 text-violet-400" />
-                  </div>
-                  <h3 className="font-bold text-white mb-2">{item.title}</h3>
-                  <p className="text-sm text-gray-400">{item.desc}</p>
-                </motion.div>
-              </AnimatedSection>
-            ))}
-          </div>
-
-          {/* Témoignage Maxime */}
-          <AnimatedSection>
-            <motion.div variants={fadeInUp} className="mt-14 bg-white/5 rounded-2xl p-8 border border-violet-500/20 relative">
-              <Quote className="absolute top-4 left-4 h-8 w-8 text-violet-500/20" />
-              <p className="text-gray-300 leading-relaxed italic pl-8">
-                &quot;Je cherchais à lancer un side-project depuis 1 an. Avec cette méthode, je l&apos;ai fait en une semaine. Déjà $320 de revenu récurrent mensuel. Plus besoin d&apos;attendre après un développeur.&quot;
-              </p>
-              <p className="mt-4 text-sm text-violet-400 font-semibold pl-8">— Maxime, fondateur de AutoPost-IA</p>
-            </motion.div>
-          </AnimatedSection>
         </div>
       </section>
 
       {/* ─── CTA FINAL ─── */}
-      <section className="relative py-28 px-6 bg-gradient-to-b from-gray-950 to-gray-900 overflow-hidden">
-        <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 h-[400px] w-[600px] rounded-full bg-violet-600/15 blur-[120px]" />
-        <div className="pointer-events-none absolute bottom-0 right-1/4 h-[300px] w-[400px] rounded-full bg-orange-500/10 blur-[100px]" />
-        <div className="absolute inset-0" style={{
-          backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.03) 1px, transparent 0)',
-          backgroundSize: '32px 32px'
-        }} />
-
+      <section className="relative py-28 px-6 bg-gray-50">
         <div className="relative mx-auto max-w-3xl text-center">
           <AnimatedSection>
-            <motion.div variants={fadeInUp}>
-              <div className="mx-auto mb-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-violet-500/10 border border-violet-500/20">
-                <Rocket className="h-8 w-8 text-violet-400" />
-              </div>
-            </motion.div>
-
             <motion.h2
               variants={fadeInUp}
-              className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6"
+              className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-gray-900"
             >
-              Arrête de rêver de ton projet.{' '}
-              <span className="bg-gradient-to-r from-violet-400 to-orange-400 bg-clip-text text-transparent">Construis-le maintenant.</span>
+              {t(lang, 'cta_title_prefix')}
+              <span className="relative">
+                <span className="relative z-10">{t(lang, 'cta_title_highlight')}</span>
+                <span className="absolute bottom-1 left-0 right-0 h-3 bg-orange-200/60 -z-0 rounded-sm" />
+              </span>
             </motion.h2>
 
             <motion.p
               variants={fadeInUp}
-              className="text-lg text-gray-400 mb-12 max-w-xl mx-auto leading-relaxed"
+              className="text-lg text-gray-500 mb-12 max-w-xl mx-auto leading-relaxed"
             >
-              Dans 10 jours, tu pourras envoyer le lien de ton site à tes clients.
+              {t(lang, 'cta_subtitle')}
             </motion.p>
 
             <motion.div variants={fadeInUp} className="flex flex-col items-center gap-4">
               <Link
                 href="/formation/inscription"
                 onClick={() => trackCtaClick('landing formation', 'footer_cta')}
-                className="group inline-flex items-center justify-center rounded-full bg-gradient-to-r from-violet-600 to-orange-500 px-10 py-5 text-lg font-bold text-white shadow-lg shadow-violet-500/20 transition-all hover:shadow-xl hover:shadow-violet-500/30 hover:-translate-y-0.5"
+                className="group inline-flex items-center justify-center rounded-full bg-gray-900 px-10 py-5 text-lg font-semibold text-white transition-all hover:bg-gray-800 hover:shadow-lg"
               >
-                Créer mon compte
+                {t(lang, 'cta_button')}
                 <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
               </Link>
-              <p className="text-sm text-gray-500">
-                <span className="text-violet-400 font-semibold">1 128</span> entrepreneurs ont déjà rejoint le mouvement
+              <p className="text-sm text-gray-400">
+                {t(lang, 'cta_social_prefix')}<span className="text-gray-600 font-semibold">1 128</span>{t(lang, 'cta_social_suffix')}
               </p>
             </motion.div>
-
           </AnimatedSection>
         </div>
       </section>
 
       {/* ─── FOOTER ─── */}
-      <footer className="border-t border-white/5 bg-gray-950 py-10 px-6">
+      <footer className="border-t border-gray-100 bg-white py-10 px-6">
         <div className="mx-auto max-w-4xl">
-          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-gray-600">
-            <a href="mailto:contact@iaco.app" className="hover:text-violet-400 transition-colors">Contact</a>
-            <span className="hover:text-violet-400 transition-colors cursor-default">Mentions Légales</span>
-            <span className="hover:text-violet-400 transition-colors cursor-default">Conditions générales d&apos;utilisation</span>
-            <span className="hover:text-violet-400 transition-colors cursor-default">Politique de confidentialité</span>
-            <span className="hover:text-violet-400 transition-colors cursor-default">Gestion des cookies</span>
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-gray-400">
+            <a href="mailto:contact@iaco.app" className="hover:text-gray-900 transition-colors">{t(lang, 'footer_contact')}</a>
+            <span className="hover:text-gray-900 transition-colors cursor-default">{t(lang, 'footer_legal')}</span>
+            <span className="hover:text-gray-900 transition-colors cursor-default">{t(lang, 'footer_terms')}</span>
+            <span className="hover:text-gray-900 transition-colors cursor-default">{t(lang, 'footer_privacy')}</span>
+            <span className="hover:text-gray-900 transition-colors cursor-default">{t(lang, 'footer_cookies')}</span>
           </div>
         </div>
       </footer>

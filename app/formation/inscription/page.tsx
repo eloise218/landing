@@ -1,9 +1,18 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Rocket } from 'lucide-react';
+import { t, type Lang } from '../translations';
 
 export default function Inscription() {
+  const [lang, setLang] = useState<Lang>('fr');
+
+  useEffect(() => {
+    const saved = localStorage.getItem('formation-lang');
+    if (saved === 'en') setLang('en');
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center px-4">
       <div className="max-w-2xl w-full text-center">
@@ -12,7 +21,7 @@ export default function Inscription() {
           className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-8"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
-          Retour à la formation
+          {t(lang, 'inscription_back')}
         </Link>
 
         <div className="bg-white p-12 rounded-lg shadow-lg border border-gray-100">
@@ -21,15 +30,15 @@ export default function Inscription() {
           </div>
 
           <h1 className="text-4xl font-bold mb-4 text-gray-900">
-            On prépare quelque chose de fou
+            {t(lang, 'inscription_title')}
           </h1>
 
           <p className="text-xl text-gray-600 mb-8">
-            La formation arrive très bientôt. Elle sera révolutionnaire, complète et faite pour tous les débutants qui veulent créer sans coder.
+            {t(lang, 'inscription_subtitle')}
           </p>
 
           <p className="text-gray-600 mb-8">
-            En attendant, tu peux nous contacter sur{' '}
+            {t(lang, 'inscription_contact')}
             <a href="mailto:contact@iaco.app" className="text-blue-600 hover:text-blue-800 font-semibold underline">
               contact@iaco.app
             </a>
@@ -39,12 +48,12 @@ export default function Inscription() {
             href="/formation"
             className="inline-flex items-center justify-center rounded-full bg-orange-500 px-8 py-4 text-lg font-semibold text-white shadow-lg transition hover:bg-orange-600 whitespace-nowrap"
           >
-            Retour à la landing
+            {t(lang, 'inscription_back_landing')}
           </Link>
         </div>
 
         <p className="text-gray-500 text-sm mt-8">
-          Statut : <span className="font-semibold text-orange-600">En construction</span>
+          {t(lang, 'inscription_status')}<span className="font-semibold text-orange-600">{t(lang, 'inscription_status_value')}</span>
         </p>
       </div>
     </div>
