@@ -25,6 +25,8 @@ import {
 } from 'lucide-react';
 import { t, type Lang } from './translations';
 
+const STRIPE_CHECKOUT_URL = 'https://buy.stripe.com/3cIfZgetg5ilcTGgg13Nm01';
+
 /* ── Animations ─────────────────────────────────────────── */
 
 const fadeInUp = {
@@ -96,7 +98,7 @@ function AnimatedCounter({ target, suffix = '', locale = 'en-US' }: { target: nu
 
 export default function ProblemSolverLanding() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [lang, setLang] = useState<Lang>('en');
+  const [lang, setLang] = useState<Lang>('fr');
   const numberLocale = lang === 'fr' ? 'fr-FR' : 'en-US';
 
   return (
@@ -127,9 +129,9 @@ export default function ProblemSolverLanding() {
               {lang === 'fr' ? 'EN' : 'FR'}
             </button>
             <Link
-              href="/problemsolver/inscription"
+              href={STRIPE_CHECKOUT_URL}
               onClick={() => trackCtaClick('landing problem', 'nav_cta')}
-              className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition"
+              className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition whitespace-nowrap"
             >
               {t(lang, 'nav_cta')}
             </Link>
@@ -167,12 +169,12 @@ export default function ProblemSolverLanding() {
                   {lang === 'fr' ? 'EN' : 'FR'}
                 </button>
                 <Link
-                  href="/problemsolver/inscription"
+                  href={STRIPE_CHECKOUT_URL}
                   onClick={() => {
                     trackCtaClick('landing problem', 'nav_mobile_cta');
                     setMobileMenuOpen(false);
                   }}
-                  className="block bg-blue-600 hover:bg-blue-700 text-white text-center font-semibold px-5 py-3 rounded-xl transition"
+                  className="block bg-blue-600 hover:bg-blue-700 text-white text-center font-semibold px-5 py-3 rounded-xl transition whitespace-nowrap"
                 >
                   {t(lang, 'nav_cta')}
                 </Link>
@@ -217,9 +219,9 @@ export default function ProblemSolverLanding() {
 
               <motion.div variants={fadeInUp} className="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-4">
                 <Link
-                  href="/problemsolver/inscription"
+                  href={STRIPE_CHECKOUT_URL}
                   onClick={() => trackCtaClick('landing problem', 'hero_cta')}
-                  className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-7 py-3.5 rounded-xl text-lg shadow-lg shadow-blue-600/25 transition"
+                  className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-7 py-3.5 rounded-xl text-lg shadow-lg shadow-blue-600/25 transition whitespace-nowrap"
                 >
                   {t(lang, 'nav_cta')}
                   <ArrowRight className="h-5 w-5" />
@@ -652,9 +654,9 @@ export default function ProblemSolverLanding() {
               </div>
 
               <Link
-                href="/problemsolver/inscription"
+                href={STRIPE_CHECKOUT_URL}
                 onClick={() => trackCtaClick('landing problem', 'pricing_cta')}
-                className="inline-flex items-center justify-center gap-2 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3.5 rounded-xl transition"
+                className="inline-flex items-center justify-center gap-2 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3.5 rounded-xl transition whitespace-nowrap"
               >
                 {t(lang, 'nav_cta')}
                 <ArrowRight className="h-4 w-4" />
@@ -735,6 +737,35 @@ export default function ProblemSolverLanding() {
         </div>
       </section>
 
+      {/* ─── FAQ ────────────────────────────────────────── */}
+      <section className="bg-slate-50 py-16 sm:py-24">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6">
+          <AnimatedSection className="text-center mb-12">
+            <motion.div variants={fadeInUp} className="inline-flex items-center gap-2 bg-blue-50 text-blue-600 px-4 py-1.5 rounded-full text-sm font-medium mb-4">
+              <MessageCircle className="h-4 w-4" />
+              {t(lang, 'faq_label')}
+            </motion.div>
+            <motion.h2 variants={fadeInUp} className="text-3xl sm:text-4xl font-bold text-slate-900">
+              {t(lang, 'faq_title')}
+            </motion.h2>
+          </AnimatedSection>
+
+          <AnimatedSection>
+            <motion.div
+              variants={fadeInUp}
+              className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm"
+            >
+              <h3 className="text-xl sm:text-2xl font-semibold text-slate-900 mb-4">
+                {t(lang, 'faq_q1')}
+              </h3>
+              <p className="text-slate-600 leading-relaxed whitespace-pre-line">
+                {t(lang, 'faq_a1')}
+              </p>
+            </motion.div>
+          </AnimatedSection>
+        </div>
+      </section>
+
       {/* ─── CTA FINAL ──────────────────────────────────── */}
       <section className="bg-slate-100 py-16 sm:py-24">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
@@ -747,9 +778,9 @@ export default function ProblemSolverLanding() {
             </motion.p>
             <motion.div variants={fadeInUp} className="mt-8">
               <Link
-                href="/problemsolver/inscription"
+                href={STRIPE_CHECKOUT_URL}
                 onClick={() => trackCtaClick('landing problem', 'footer_cta')}
-                className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 rounded-xl text-lg shadow-lg shadow-blue-600/25 transition"
+                className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 rounded-xl text-lg shadow-lg shadow-blue-600/25 transition whitespace-nowrap"
               >
                 {t(lang, 'cta_button')}
                 <ArrowRight className="h-5 w-5" />

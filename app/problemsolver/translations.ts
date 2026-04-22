@@ -7,8 +7,8 @@ const translations = {
     fr: 'Comment ca marche',
   },
   nav_cta: {
-    en: 'Create an account',
-    fr: 'Créer un compte',
+    en: 'Pre-order for €9',
+    fr: 'Précommander pour 9€',
   },
 
   // ─── HERO ─────────────────────────────────────────────
@@ -417,6 +417,24 @@ const translations = {
     fr: 'On te donne la réalité du marché, pour décider intelligemment.',
   },
 
+  // ─── FAQ ──────────────────────────────────────────────
+  faq_label: {
+    en: 'FAQ',
+    fr: 'FAQ',
+  },
+  faq_title: {
+    en: 'Frequently asked questions',
+    fr: 'Questions fréquentes',
+  },
+  faq_q1: {
+    en: 'Who am I?',
+    fr: 'Qui suis-je ?',
+  },
+  faq_a1: {
+    en: 'For my first company, I spent 6 months building a product without ever talking to real users. Market research made me believe I would find customers… but in the end I had to shut it down. That\u2019s when I realized the real problem: before building anything, you need a tool that actually validates your idea — by listening to real frustrations from real people. That\u2019s why I built ProblemFinder.',
+    fr: 'Pour ma première entreprise, j\u2019ai passé 6 mois à créer un produit sans jamais parler à de vrais utilisateurs. Les études de marché me faisaient croire que j\u2019allais avoir des clients… mais au final j\u2019ai dû tout arrêter. C\u2019est là que j\u2019ai compris le vrai problème : avant de créer quoi que ce soit, il faut un outil qui permette vraiment de valider son idée — en écoutant les frustrations réelles des vraies personnes. C\u2019est pour ça que j\u2019ai construit ProblemFinder.',
+  },
+
   // ─── CTA ──────────────────────────────────────────────
   cta_title: {
     en: 'Your future business starts with a real problem.',
@@ -427,8 +445,54 @@ const translations = {
     fr: 'Arrête de deviner. Regarde ce que les utilisateurs disent vraiment.',
   },
   cta_button: {
-    en: 'Create an account and validate my idea',
-    fr: 'Créer un compte et valider mon idée',
+    en: 'Pre-order for €9',
+    fr: 'Précommander pour 9€',
+  },
+
+  // ─── THANKS ───────────────────────────────────────────
+  thanks_badge: {
+    en: 'Payment confirmed',
+    fr: 'Paiement confirmé',
+  },
+  thanks_title: {
+    en: 'Thank you for your pre-order!',
+    fr: 'Merci pour ta précommande !',
+  },
+  thanks_subtitle: {
+    en: 'Your spot is reserved. You\u2019re among the very first to support ProblemFinder.',
+    fr: 'Ta place est réservée. Tu fais partie des tout premiers à soutenir ProblemFinder.',
+  },
+  thanks_next_title: {
+    en: 'What happens next?',
+    fr: 'Et maintenant ?',
+  },
+  thanks_next1_title: {
+    en: 'Confirmation email',
+    fr: 'Email de confirmation',
+  },
+  thanks_next1_desc: {
+    en: 'You\u2019ll receive a receipt from Stripe within a few minutes.',
+    fr: 'Tu vas recevoir un reçu de Stripe dans quelques minutes.',
+  },
+  thanks_next2_title: {
+    en: 'Early access',
+    fr: 'Accès prioritaire',
+  },
+  thanks_next2_desc: {
+    en: 'As soon as the product is ready, you\u2019ll be among the first to get access — by email.',
+    fr: 'Dès que le produit est prêt, tu seras parmi les premiers à y accéder — par email.',
+  },
+  thanks_next3_title: {
+    en: 'A question?',
+    fr: 'Une question ?',
+  },
+  thanks_next3_desc: {
+    en: 'Reply directly to your confirmation email or write to contact@iaco.app.',
+    fr: 'Réponds directement à ton email de confirmation ou écris à contact@iaco.app.',
+  },
+  thanks_back: {
+    en: 'Back to home',
+    fr: 'Retour à l\u2019accueil',
   },
 
   // ─── FOOTER ───────────────────────────────────────────
