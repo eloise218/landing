@@ -6,12 +6,7 @@ import { useRef, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { trackCtaClick } from '@/lib/analytics';
 import { t, type Lang } from './translations';
-import {
-  CheckCircle, ArrowRight, ChevronDown,
-  Users, FolderKanban, Star,
-  Receipt, Clock, Puzzle,
-  Quote, Rocket, Database, Monitor, Globe, Menu, X
-} from 'lucide-react';
+import { ArrowRight, Globe, Menu, X, CheckCircle, Eye } from 'lucide-react';
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -44,24 +39,78 @@ function AnimatedSection({ children, className = "" }: { children: React.ReactNo
   );
 }
 
-function FAQ({ question, answer, category }: { question: string; answer: string; category?: string }) {
-  const [open, setOpen] = useState(false);
+function MockupVisual() {
   return (
-    <button
-      onClick={() => setOpen(!open)}
-      className="w-full text-left bg-white rounded-2xl p-6 border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all duration-300"
-    >
-      {category && (
-        <span className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2 block">{category}</span>
-      )}
-      <div className="flex items-center justify-between gap-4">
-        <h3 className="text-lg font-semibold text-gray-900">{question}</h3>
-        <ChevronDown className={`w-5 h-5 text-gray-400 flex-shrink-0 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
+    <div className="relative">
+      {/* Glow effect behind */}
+      <div className="absolute -inset-4 bg-gradient-to-r from-[#0B3CFF]/20 via-[#6C5CE7]/20 to-[#0B3CFF]/10 rounded-3xl blur-2xl" />
+
+      {/* Browser mockup */}
+      <div className="relative bg-white rounded-2xl shadow-2xl border border-gray-200/60 overflow-hidden">
+        {/* Browser bar */}
+        <div className="flex items-center gap-2 px-4 py-3 bg-gray-50 border-b border-gray-100">
+          <div className="flex gap-1.5">
+            <div className="w-3 h-3 rounded-full bg-red-400" />
+            <div className="w-3 h-3 rounded-full bg-yellow-400" />
+            <div className="w-3 h-3 rounded-full bg-green-400" />
+          </div>
+          <div className="flex-1 mx-4">
+            <div className="bg-white rounded-md px-3 py-1 text-xs text-gray-400 border border-gray-200">
+              mon-projet.app
+            </div>
+          </div>
+        </div>
+
+        {/* Site content mockup */}
+        <div className="p-6 space-y-4">
+          {/* Nav */}
+          <div className="flex items-center justify-between">
+            <div className="h-3 w-20 bg-[#0B3CFF]/20 rounded" />
+            <div className="flex gap-3">
+              <div className="h-3 w-12 bg-gray-200 rounded" />
+              <div className="h-3 w-12 bg-gray-200 rounded" />
+              <div className="h-6 w-16 bg-[#0B3CFF] rounded-full" />
+            </div>
+          </div>
+
+          {/* Hero area */}
+          <div className="pt-4 space-y-3">
+            <div className="h-4 w-3/4 bg-gray-800 rounded" />
+            <div className="h-4 w-1/2 bg-gray-800 rounded" />
+            <div className="h-3 w-2/3 bg-gray-300 rounded mt-2" />
+          </div>
+
+          {/* Cards */}
+          <div className="grid grid-cols-3 gap-3 pt-4">
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="space-y-2 p-3 rounded-lg bg-gray-50 border border-gray-100">
+                <div className="h-8 w-8 rounded-lg bg-[#6C5CE7]/20" />
+                <div className="h-2 w-full bg-gray-200 rounded" />
+                <div className="h-2 w-2/3 bg-gray-200 rounded" />
+              </div>
+            ))}
+          </div>
+
+          {/* CTA */}
+          <div className="flex justify-center pt-2">
+            <div className="h-8 w-28 bg-[#0B3CFF] rounded-full" />
+          </div>
+        </div>
       </div>
-      {open && (
-        <p className="mt-4 text-gray-600 leading-relaxed">{answer}</p>
-      )}
-    </button>
+
+      {/* Floating badge */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.8, duration: 0.5 }}
+        className="absolute -bottom-3 -right-3 bg-white rounded-xl shadow-lg border border-gray-200 px-3 py-2 flex items-center gap-2"
+      >
+        <div className="h-6 w-6 rounded-full bg-green-100 flex items-center justify-center">
+          <CheckCircle className="h-3.5 w-3.5 text-green-600" />
+        </div>
+        <span className="text-xs font-semibold text-gray-700">100% IA</span>
+      </motion.div>
+    </div>
   );
 }
 
@@ -75,52 +124,40 @@ function Header({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void }) {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const navItems = [
-    { label: t(lang, 'nav_programme'), href: "#programme" },
-    { label: t(lang, 'nav_temoignages'), href: "#temoignages" },
-    { label: t(lang, 'nav_faq'), href: "#faq" },
-  ];
-
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/80 backdrop-blur-lg shadow-sm' : 'bg-transparent'}`}>
-      <div className="mx-auto max-w-5xl px-6 py-4 flex items-center justify-between">
-        <a href="#" className="text-lg font-bold text-gray-900">
-          Vibe<span className="text-gray-900">Code</span>
+      <div className="mx-auto max-w-6xl px-6 py-4 flex items-center justify-between">
+        <a href="#" className="text-xl font-extrabold text-[#111]">
+          Vibe<span className="text-[#0B3CFF]">Code</span>
         </a>
 
-        <nav className="hidden md:flex items-center gap-8">
-          {navItems.map((item) => (
-            <a key={item.href} href={item.href} className="text-sm text-gray-500 hover:text-gray-900 transition-colors">
-              {item.label}
-            </a>
-          ))}
+        <nav className="hidden md:flex items-center gap-6">
           <button
             onClick={() => setLang(lang === 'fr' ? 'en' : 'fr')}
-            className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900 transition-colors"
+            className="flex items-center gap-1.5 text-sm text-[#333] hover:text-[#111] transition-colors"
           >
             <Globe className="h-4 w-4" />
             {lang === 'fr' ? 'EN' : 'FR'}
           </button>
-        </nav>
-
-        <div className="flex items-center gap-3 md:gap-0">
-          <button
-            onClick={() => setLang(lang === 'fr' ? 'en' : 'fr')}
-            className="md:hidden flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900 transition-colors"
-          >
-            <Globe className="h-4 w-4" />
-            {lang === 'fr' ? 'EN' : 'FR'}
-          </button>
-
           <Link
-            href="/formation/inscription"
-            onClick={() => trackCtaClick('landing formation', 'header_cta')}
-            className="hidden md:inline-flex items-center justify-center rounded-full bg-gray-900 px-5 py-2 text-sm font-semibold text-white transition-all hover:bg-gray-800"
+            href="/formation/methode"
+            onClick={() => trackCtaClick('landing formation v2', 'header_cta')}
+            className="inline-flex items-center justify-center rounded-full bg-[#0B3CFF] px-6 py-2.5 text-sm font-bold text-white transition-all hover:bg-[#0933DD] hover:shadow-lg hover:shadow-[#0B3CFF]/25"
           >
             {t(lang, 'nav_cta')}
+            <ArrowRight className="ml-1.5 h-4 w-4" />
           </Link>
+        </nav>
 
-          <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden text-gray-900">
+        <div className="flex items-center gap-3 md:hidden">
+          <button
+            onClick={() => setLang(lang === 'fr' ? 'en' : 'fr')}
+            className="flex items-center gap-1.5 text-sm text-[#333] hover:text-[#111] transition-colors"
+          >
+            <Globe className="h-4 w-4" />
+            {lang === 'fr' ? 'EN' : 'FR'}
+          </button>
+          <button onClick={() => setMenuOpen(!menuOpen)} className="text-[#111]">
             {menuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
         </div>
@@ -129,17 +166,13 @@ function Header({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void }) {
       {menuOpen && (
         <div className="md:hidden bg-white/95 backdrop-blur-lg border-b border-gray-100 px-6 pb-6">
           <nav className="flex flex-col gap-4">
-            {navItems.map((item) => (
-              <a key={item.href} href={item.href} onClick={() => setMenuOpen(false)} className="text-sm text-gray-500 hover:text-gray-900 transition-colors">
-                {item.label}
-              </a>
-            ))}
             <Link
-              href="/formation/inscription"
-              onClick={() => { trackCtaClick('landing formation', 'header_cta_mobile'); setMenuOpen(false); }}
-              className="inline-flex items-center justify-center rounded-full bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white mt-2"
+              href="/formation/methode"
+              onClick={() => { trackCtaClick('landing formation v2', 'header_cta_mobile'); setMenuOpen(false); }}
+              className="inline-flex items-center justify-center rounded-full bg-[#0B3CFF] px-5 py-3 text-sm font-bold text-white mt-2 shadow-lg shadow-[#0B3CFF]/25"
             >
               {t(lang, 'nav_cta')}
+              <ArrowRight className="ml-1.5 h-4 w-4" />
             </Link>
           </nav>
         </div>
@@ -162,482 +195,218 @@ export default function Formation() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-gray-900 overflow-x-hidden">
+    <div className="min-h-screen bg-[#F8F9FB] text-[#111] overflow-x-hidden">
       <Header lang={lang} setLang={handleSetLang} />
 
       {/* ─── HERO ─── */}
-      <section className="relative pt-32 pb-20 px-6">
-        <div className="relative mx-auto max-w-3xl text-center">
-          <AnimatedSection>
-            <motion.h1
-              variants={fadeInUp}
-              className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-[1.1] tracking-tight text-gray-900"
-            >
-              {t(lang, 'hero_title_prefix')}
-              <span className="relative">
-                <span className="relative z-10">{t(lang, 'hero_title_highlight')}</span>
-                <span className="absolute bottom-1 left-0 right-0 h-3 bg-orange-200/60 -z-0 rounded-sm" />
-              </span>.
-            </motion.h1>
+      <section className="relative pt-28 pb-20 px-6 overflow-hidden">
+        {/* Gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0B3CFF]/5 via-[#6C5CE7]/5 to-[#F8F9FB]" />
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#6C5CE7]/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#0B3CFF]/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/3" />
 
-            <motion.p
-              variants={fadeInUp}
-              className="mx-auto mt-8 max-w-2xl text-lg sm:text-xl text-gray-500 leading-relaxed"
-            >
-              {t(lang, 'hero_subtitle')}
-            </motion.p>
-
-            <motion.div
-              variants={fadeInUp}
-              className="mt-10 flex flex-col items-center gap-4"
-            >
-              <Link
-                href="/formation/inscription"
-                onClick={() => trackCtaClick('landing formation', 'hero_cta')}
-                className="group inline-flex items-center justify-center rounded-full bg-gray-900 px-8 py-4 text-lg font-semibold text-white transition-all hover:bg-gray-800 hover:shadow-lg"
+        <div className="relative mx-auto max-w-6xl">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            {/* Left: Text */}
+            <AnimatedSection>
+              <motion.h1
+                variants={fadeInUp}
+                className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-[1.08] tracking-tight text-[#111]"
               >
-                {t(lang, 'hero_cta')}
-                <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-              </Link>
-              <p className="text-sm text-gray-400">
-                {t(lang, 'hero_social_prefix')}<span className="text-gray-600 font-semibold">1 128</span>{t(lang, 'hero_social_suffix')}
-              </p>
+                {t(lang, 'v2_hero_title_line1')}
+                <span className="relative inline-block">
+                  <span className="relative z-10 text-[#0B3CFF]">{t(lang, 'v2_hero_title_highlight1')}</span>
+                  <span className="absolute bottom-1 left-0 right-0 h-3 bg-[#0B3CFF]/15 -z-0 rounded-sm" />
+                </span>
+                <br />
+                <span className="text-[#6C5CE7]">{t(lang, 'v2_hero_title_line2')}</span>
+              </motion.h1>
+
+              <motion.div
+                variants={fadeInUp}
+                className="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-5"
+              >
+                <Link
+                  href="/formation/methode"
+                  onClick={() => trackCtaClick('landing formation v2', 'hero_cta')}
+                  className="group inline-flex items-center justify-center rounded-full bg-[#0B3CFF] px-14 py-6 text-xl font-bold text-white transition-all hover:bg-[#0933DD] shadow-xl shadow-[#0B3CFF]/30 hover:shadow-2xl hover:shadow-[#0B3CFF]/40 hover:scale-[1.02]"
+                >
+                  {t(lang, 'v2_hero_cta')}
+                  <ArrowRight className="ml-3 h-6 w-6 transition-transform group-hover:translate-x-1" />
+                </Link>
+                <div className="flex items-center gap-2 text-sm text-[#333]/70">
+                  <Eye className="h-4 w-4" />
+                  <span className="font-medium">{t(lang, 'v2_hero_social')}</span>
+                </div>
+              </motion.div>
+            </AnimatedSection>
+
+            {/* Right: Mockup */}
+            <motion.div
+              initial={{ opacity: 0, x: 40 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              className="hidden md:block"
+            >
+              <MockupVisual />
             </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── WHAT I'LL SHOW YOU ─── */}
+      <section className="py-16 px-6 bg-white">
+        <div className="mx-auto max-w-3xl text-center">
+          <AnimatedSection>
+            <motion.p variants={fadeInUp} className="text-[#333] font-semibold text-xl mb-6">
+              {t(lang, 'v2_hero_what_title')}
+            </motion.p>
+            <motion.ul variants={fadeInUp} className="space-y-3 inline-block text-left">
+              {[
+                t(lang, 'v2_hero_bullet1'),
+                t(lang, 'v2_hero_bullet2'),
+                t(lang, 'v2_hero_bullet3'),
+              ].map((item, i) => (
+                <li key={i} className="flex items-start gap-3 text-[#333] text-lg">
+                  <CheckCircle className="h-5 w-5 text-[#0B3CFF] flex-shrink-0 mt-1" />
+                  {item}
+                </li>
+              ))}
+            </motion.ul>
           </AnimatedSection>
         </div>
       </section>
 
-      {/* ─── SOCIAL PROOF STATS ─── */}
-      <section className="py-12 px-6 border-y border-gray-100">
+      {/* ─── SECTION 2: PAIN POINTS ─── */}
+      <section className="py-20 px-6 bg-white">
         <div className="mx-auto max-w-3xl">
           <AnimatedSection>
-            <motion.p variants={fadeInUp} className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400 mb-8">
-              {t(lang, 'stats_label')}
+            <motion.h2
+              variants={fadeInUp}
+              className="text-2xl sm:text-3xl font-bold text-[#111] mb-10 text-center"
+            >
+              {t(lang, 'v2_pain_title')}
+            </motion.h2>
+          </AnimatedSection>
+
+          <div className="space-y-4 max-w-lg mx-auto">
+            {[
+              t(lang, 'v2_pain_card1'),
+              t(lang, 'v2_pain_card2'),
+              t(lang, 'v2_pain_card3'),
+            ].map((item, i) => (
+              <AnimatedSection key={i}>
+                <motion.div
+                  variants={fadeInUp}
+                  className="bg-[#F8F9FB] rounded-2xl p-6 border border-gray-200 text-center hover:border-[#6C5CE7]/30 transition-colors"
+                >
+                  <p className="text-lg text-[#333] italic">{item}</p>
+                </motion.div>
+              </AnimatedSection>
+            ))}
+          </div>
+
+          <AnimatedSection>
+            <motion.p
+              variants={fadeInUp}
+              className="text-center text-xl font-bold text-[#111] mt-10"
+            >
+              {t(lang, 'v2_pain_result')}
             </motion.p>
-            <motion.div variants={fadeInUp} className="grid grid-cols-3 gap-6 text-center">
+          </AnimatedSection>
+        </div>
+      </section>
+
+      {/* ─── SECTION 3: REALITY ─── */}
+      <section className="py-20 px-6 relative overflow-hidden">
+        {/* Subtle gradient */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#F8F9FB] via-[#6C5CE7]/5 to-[#F8F9FB]" />
+        <div className="relative mx-auto max-w-3xl text-center">
+          <AnimatedSection>
+            <motion.h2
+              variants={fadeInUp}
+              className="text-2xl sm:text-3xl font-bold text-[#111] mb-10"
+            >
+              {t(lang, 'v2_reality_title')}
+            </motion.h2>
+
+            <motion.div variants={fadeInUp} className="space-y-5">
               {[
-                { icon: Users, value: "1 128", label: t(lang, 'stat_members') },
-                { icon: FolderKanban, value: "112", label: t(lang, 'stat_activities') },
-                { icon: Star, value: "50", label: t(lang, 'stat_reviews') }
-              ].map((stat, i) => (
-                <div key={i} className="flex flex-col items-center gap-2">
-                  <stat.icon className="h-5 w-5 text-gray-300" />
-                  <p className="text-2xl sm:text-3xl font-extrabold text-gray-900">{stat.value}</p>
-                  <p className="text-xs sm:text-sm text-gray-400">{stat.label}</p>
-                </div>
+                t(lang, 'v2_reality_p1'),
+                t(lang, 'v2_reality_p2'),
+                t(lang, 'v2_reality_p3'),
+              ].map((item, i) => (
+                <p key={i} className="text-xl text-[#333] font-medium">
+                  <span className="text-[#6C5CE7] font-bold">→</span> {item}
+                </p>
               ))}
             </motion.div>
           </AnimatedSection>
         </div>
       </section>
 
-      {/* ─── LE PROBLÈME ─── */}
-      <section className="relative py-24 px-6 bg-gray-50">
-        <div className="relative mx-auto max-w-3xl">
+      {/* ─── SECTION 4: PROOF ─── */}
+      <section className="py-20 px-6 bg-white">
+        <div className="mx-auto max-w-3xl text-center">
           <AnimatedSection>
-            <motion.p variants={fadeInUp} className="text-sm font-semibold uppercase tracking-wider text-gray-400 mb-4 text-center">
-              {t(lang, 'problem_label')}
-            </motion.p>
             <motion.h2
               variants={fadeInUp}
-              className="text-3xl sm:text-4xl font-bold mb-6 text-center text-gray-900"
+              className="text-2xl sm:text-3xl font-bold text-[#111] mb-8"
             >
-              {t(lang, 'problem_title')}
+              {t(lang, 'v2_proof_title')}
             </motion.h2>
-            <motion.p variants={fadeInUp} className="text-lg text-gray-500 mb-14 text-center max-w-2xl mx-auto">
-              {t(lang, 'problem_intro')}
-            </motion.p>
-          </AnimatedSection>
 
-          <div className="grid gap-4">
-            {[
-              { icon: Receipt, title: t(lang, 'problem_card1_title'), desc: t(lang, 'problem_card1_desc') },
-              { icon: Clock, title: t(lang, 'problem_card2_title'), desc: t(lang, 'problem_card2_desc') },
-              { icon: Puzzle, title: t(lang, 'problem_card3_title'), desc: t(lang, 'problem_card3_desc') }
-            ].map((item, i) => (
-              <AnimatedSection key={i}>
-                <motion.div
-                  variants={fadeInUp}
-                  className="group flex items-start gap-5 bg-white rounded-2xl p-6 border border-gray-200 hover:shadow-md transition-all duration-300"
-                >
-                  <div className="flex-shrink-0 flex h-12 w-12 items-center justify-center rounded-xl bg-orange-50 border border-orange-100">
-                    <item.icon className="h-6 w-6 text-orange-500" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-gray-900 text-lg mb-1">{item.title}</h3>
-                    <p className="text-gray-500">{item.desc}</p>
-                  </div>
-                </motion.div>
-              </AnimatedSection>
-            ))}
-          </div>
-
-          <AnimatedSection>
-            <motion.p variants={fadeInUp} className="text-center text-lg text-gray-400 mt-10 font-medium">
-              {t(lang, 'problem_result_prefix')}<span className="text-gray-900 font-semibold">{t(lang, 'problem_result_bold')}</span>
-            </motion.p>
-          </AnimatedSection>
-        </div>
-      </section>
-
-      {/* ─── TÉMOIGNAGE STÉPHANE ─── */}
-      <section className="py-16 px-6 bg-white">
-        <div className="mx-auto max-w-3xl">
-          <AnimatedSection>
-            <motion.div variants={fadeInUp} className="bg-gray-50 rounded-2xl p-8 sm:p-10 border border-gray-200 relative">
-              <Quote className="absolute top-6 left-6 h-8 w-8 text-gray-200" />
-              <p className="text-sm font-semibold text-orange-500 mb-4 pl-10">{t(lang, 'testimonial_stephane_tag')}</p>
-              <p className="text-gray-700 leading-relaxed pl-10 text-lg">
-                {t(lang, 'testimonial_stephane_quote_prefix')}<span className="font-semibold text-gray-900">{t(lang, 'testimonial_stephane_highlight')}</span>&quot;
-              </p>
-              <div className="mt-6 pl-10 flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-sm font-bold text-gray-500">SR</div>
-                <div>
-                  <p className="font-semibold text-gray-900">{t(lang, 'testimonial_stephane_name')}</p>
-                  <p className="text-sm text-gray-400">{t(lang, 'testimonial_stephane_role')}</p>
-                </div>
-              </div>
-            </motion.div>
-          </AnimatedSection>
-        </div>
-      </section>
-
-      {/* ─── LA MÉTHODE : OLD VS NEW ─── */}
-      <section className="relative py-24 px-6 bg-white">
-        <div className="relative mx-auto max-w-4xl">
-          <AnimatedSection>
-            <motion.p variants={fadeInUp} className="text-sm font-semibold uppercase tracking-wider text-gray-400 mb-4 text-center">
-              {t(lang, 'method_label')}
-            </motion.p>
-            <motion.h2
-              variants={fadeInUp}
-              className="text-3xl sm:text-4xl font-bold text-center mb-4 text-gray-900"
-            >
-              {t(lang, 'method_title')}
-            </motion.h2>
-            <motion.p
-              variants={fadeInUp}
-              className="text-lg text-gray-500 text-center mb-16 max-w-2xl mx-auto"
-            >
-              {t(lang, 'method_subtitle')}
-            </motion.p>
-          </AnimatedSection>
-
-          <AnimatedSection>
-            <motion.div variants={fadeInUp} className="grid md:grid-cols-2 gap-4">
-              {/* Old Way */}
-              <div className="rounded-2xl p-8 bg-gray-50 border border-gray-200">
-                <h3 className="text-lg font-bold text-gray-400 mb-6">{t(lang, 'method_old_title')}</h3>
-                <ul className="space-y-5">
-                  {[
-                    t(lang, 'method_old_1'),
-                    t(lang, 'method_old_2'),
-                    t(lang, 'method_old_3'),
-                    t(lang, 'method_old_4')
-                  ].map((item, i) => (
-                    <li key={i} className="flex gap-3 text-gray-400 line-through decoration-gray-300">
-                      <span className="text-gray-300 flex-shrink-0">✕</span>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* New Way */}
-              <div className="rounded-2xl p-8 bg-white border-2 border-gray-900">
-                <h3 className="text-lg font-bold text-gray-900 mb-6">{t(lang, 'method_new_title')}</h3>
-                <ul className="space-y-5">
-                  {[
-                    t(lang, 'method_new_1'),
-                    t(lang, 'method_new_2'),
-                    t(lang, 'method_new_3'),
-                    t(lang, 'method_new_4')
-                  ].map((item, i) => (
-                    <li key={i} className="flex gap-3 text-gray-700">
-                      <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </motion.div>
-          </AnimatedSection>
-        </div>
-      </section>
-
-      {/* ─── LE DÉCLIC (STORYTELLING) ─── */}
-      <section className="relative py-24 px-6 bg-gray-50">
-        <div className="relative mx-auto max-w-3xl">
-          <AnimatedSection>
-            <motion.p variants={fadeInUp} className="text-sm font-semibold uppercase tracking-wider text-gray-400 mb-4 text-center">
-              {t(lang, 'declic_label')}
-            </motion.p>
-            <motion.h2
-              variants={fadeInUp}
-              className="text-3xl sm:text-4xl font-bold text-center mb-12 text-gray-900"
-            >
-              {t(lang, 'declic_title')}
-            </motion.h2>
-          </AnimatedSection>
-
-          <AnimatedSection>
-            <motion.div variants={fadeInUp} className="space-y-6 text-lg text-gray-600 leading-relaxed">
-              <p>
-                {t(lang, 'declic_p1')}
-              </p>
-              <p>
-                {t(lang, 'declic_p2_prefix')}<span className="font-semibold text-gray-900">{t(lang, 'declic_p2_claude')}</span>{t(lang, 'declic_p2_middle')}<span className="font-semibold text-gray-900">{t(lang, 'declic_p2_tools')}</span>{t(lang, 'declic_p2_suffix')}
-              </p>
-              <p>
-                {t(lang, 'declic_p3_prefix')}<span className="font-semibold text-gray-900">{t(lang, 'declic_p3_bold')}</span>
+            <motion.div variants={fadeInUp} className="space-y-3">
+              {[
+                t(lang, 'v2_proof_item1'),
+                t(lang, 'v2_proof_item2'),
+                t(lang, 'v2_proof_item3'),
+              ].map((item, i) => (
+                <p key={i} className="text-lg text-[#333] font-medium">
+                  <span className="text-green-500">&#10003;</span> {item}
+                </p>
+              ))}
+              <p className="text-xl font-bold text-[#0B3CFF] mt-6 pt-2">
+                → {t(lang, 'v2_proof_conclusion')}
               </p>
             </motion.div>
           </AnimatedSection>
-        </div>
-      </section>
-
-      {/* ─── PROGRAMME 10 JOURS ─── */}
-      <section id="programme" className="relative py-24 px-6 bg-white scroll-mt-20">
-        <div className="relative mx-auto max-w-4xl">
-          <AnimatedSection>
-            <motion.p variants={fadeInUp} className="text-sm font-semibold uppercase tracking-wider text-gray-400 mb-4 text-center">
-              {t(lang, 'programme_label')}
-            </motion.p>
-            <motion.h2
-              variants={fadeInUp}
-              className="text-3xl sm:text-4xl font-bold text-center mb-4 text-gray-900"
-            >
-              {t(lang, 'programme_title')}
-            </motion.h2>
-            <motion.p
-              variants={fadeInUp}
-              className="text-lg text-gray-500 text-center mb-16"
-            >
-              {t(lang, 'programme_subtitle')}
-            </motion.p>
-          </AnimatedSection>
-
-          <div className="space-y-4">
-            {[
-              {
-                days: t(lang, 'programme_day1_days'),
-                title: t(lang, 'programme_day1_title'),
-                desc: t(lang, 'programme_day1_desc'),
-                icon: Rocket,
-              },
-              {
-                days: t(lang, 'programme_day2_days'),
-                title: t(lang, 'programme_day2_title'),
-                desc: t(lang, 'programme_day2_desc'),
-                icon: Database,
-              },
-              {
-                days: t(lang, 'programme_day3_days'),
-                title: t(lang, 'programme_day3_title'),
-                desc: t(lang, 'programme_day3_desc'),
-                icon: Monitor,
-              },
-              {
-                days: t(lang, 'programme_day4_days'),
-                title: t(lang, 'programme_day4_title'),
-                desc: t(lang, 'programme_day4_desc'),
-                icon: Globe,
-              }
-            ].map((item, i) => (
-              <AnimatedSection key={i}>
-                <motion.div
-                  variants={fadeInUp}
-                  className="group flex items-start gap-5 bg-white rounded-2xl p-6 border border-gray-200 hover:shadow-md transition-all duration-300"
-                >
-                  <div className="flex-shrink-0 flex h-12 w-12 items-center justify-center rounded-xl bg-gray-900 text-white">
-                    <item.icon className="h-6 w-6" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-1">
-                      <span className="text-xs font-bold font-mono uppercase tracking-wider text-gray-400 bg-gray-100 px-2.5 py-1 rounded-md w-fit">
-                        {item.days}
-                      </span>
-                      <h3 className="font-bold text-gray-900 text-lg">{item.title}</h3>
-                    </div>
-                    <p className="text-gray-500 mt-1">{item.desc}</p>
-                  </div>
-                </motion.div>
-              </AnimatedSection>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ─── TÉMOIGNAGES ─── */}
-      <section id="temoignages" className="relative py-24 px-6 bg-gray-50 scroll-mt-20">
-        <div className="relative mx-auto max-w-5xl">
-          <AnimatedSection>
-            <motion.p variants={fadeInUp} className="text-sm font-semibold uppercase tracking-wider text-gray-400 mb-4 text-center">
-              {t(lang, 'temoignages_label')}
-            </motion.p>
-            <motion.h2
-              variants={fadeInUp}
-              className="text-3xl sm:text-4xl font-bold text-center mb-16 text-gray-900"
-            >
-              {t(lang, 'temoignages_title')}
-            </motion.h2>
-          </AnimatedSection>
-
-          <div className="grid md:grid-cols-2 gap-5">
-            {[
-              {
-                quote: t(lang, 'temoignage1_quote'),
-                name: t(lang, 'temoignage1_name'),
-                project: t(lang, 'temoignage1_project'),
-                tag: t(lang, 'temoignage1_tag'),
-                initials: "MA"
-              },
-              {
-                quote: t(lang, 'temoignage2_quote'),
-                name: t(lang, 'temoignage2_name'),
-                project: t(lang, 'temoignage2_project'),
-                tag: t(lang, 'temoignage2_tag'),
-                initials: "MD"
-              },
-              {
-                quote: t(lang, 'temoignage3_quote'),
-                name: t(lang, 'temoignage3_name'),
-                project: t(lang, 'temoignage3_project'),
-                tag: t(lang, 'temoignage3_tag'),
-                initials: "OC"
-              },
-              {
-                quote: t(lang, 'temoignage4_quote'),
-                name: t(lang, 'temoignage4_name'),
-                project: t(lang, 'temoignage4_project'),
-                tag: t(lang, 'temoignage4_tag'),
-                initials: "SP"
-              }
-            ].map((item, i) => (
-              <AnimatedSection key={i}>
-                <motion.div
-                  variants={fadeInUp}
-                  className="bg-white rounded-2xl p-7 border border-gray-200 hover:shadow-md transition-all duration-300 flex flex-col"
-                >
-                  <p className="text-sm font-semibold text-gray-900 mb-4">&quot;{item.tag}&quot;</p>
-                  <p className="text-gray-600 leading-relaxed flex-1">&quot;{item.quote}&quot;</p>
-                  <div className="mt-6 pt-5 border-t border-gray-100 flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center text-sm font-bold text-gray-500">{item.initials}</div>
-                    <div>
-                      <p className="font-semibold text-gray-900">{item.name}</p>
-                      <p className="text-sm text-gray-400">{item.project}</p>
-                    </div>
-                  </div>
-                </motion.div>
-              </AnimatedSection>
-            ))}
-          </div>
-
-          {/* Témoignage Valérie */}
-          <AnimatedSection>
-            <motion.div variants={fadeInUp} className="mt-6 bg-white rounded-2xl p-8 sm:p-10 border border-gray-200 relative">
-              <Quote className="absolute top-6 left-6 h-8 w-8 text-gray-200" />
-              <p className="text-sm font-semibold text-orange-500 mb-4 pl-10">{t(lang, 'temoignage_valerie_tag')}</p>
-              <p className="text-gray-700 leading-relaxed pl-10 text-lg">
-                {t(lang, 'temoignage_valerie_quote_prefix')}<span className="font-semibold text-gray-900">{t(lang, 'temoignage_valerie_highlight')}</span>{t(lang, 'temoignage_valerie_suffix')}
-              </p>
-              <div className="mt-6 pl-10 flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center text-sm font-bold text-gray-500">VM</div>
-                <div>
-                  <p className="font-semibold text-gray-900">{t(lang, 'temoignage_valerie_name')}</p>
-                  <p className="text-sm text-gray-400">{t(lang, 'temoignage_valerie_role')}</p>
-                </div>
-              </div>
-            </motion.div>
-          </AnimatedSection>
-        </div>
-      </section>
-
-      {/* ─── FAQ ─── */}
-      <section id="faq" className="relative py-24 px-6 bg-white scroll-mt-20">
-        <div className="relative mx-auto max-w-3xl">
-          <AnimatedSection>
-            <motion.h2
-              variants={fadeInUp}
-              className="text-3xl sm:text-4xl font-bold text-center mb-14 text-gray-900"
-            >
-              {t(lang, 'faq_title')}
-            </motion.h2>
-          </AnimatedSection>
-
-          <div className="space-y-3">
-            <FAQ
-              category={t(lang, 'faq1_category')}
-              question={t(lang, 'faq1_question')}
-              answer={t(lang, 'faq1_answer')}
-            />
-            <FAQ
-              category={t(lang, 'faq2_category')}
-              question={t(lang, 'faq2_question')}
-              answer={t(lang, 'faq2_answer')}
-            />
-            <FAQ
-              category={t(lang, 'faq3_category')}
-              question={t(lang, 'faq3_question')}
-              answer={t(lang, 'faq3_answer')}
-            />
-            <FAQ
-              category={t(lang, 'faq4_category')}
-              question={t(lang, 'faq4_question')}
-              answer={t(lang, 'faq4_answer')}
-            />
-            <FAQ
-              category={t(lang, 'faq5_category')}
-              question={t(lang, 'faq5_question')}
-              answer={t(lang, 'faq5_answer')}
-            />
-            <FAQ
-              category={t(lang, 'faq6_category')}
-              question={t(lang, 'faq6_question')}
-              answer={t(lang, 'faq6_answer')}
-            />
-            <FAQ
-              category={t(lang, 'faq7_category')}
-              question={t(lang, 'faq7_question')}
-              answer={t(lang, 'faq7_answer')}
-            />
-          </div>
         </div>
       </section>
 
       {/* ─── CTA FINAL ─── */}
-      <section className="relative py-28 px-6 bg-gray-50">
+      <section className="py-24 px-6 relative overflow-hidden">
+        {/* Gradient bg */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0B3CFF]/8 via-[#6C5CE7]/8 to-[#F8F9FB]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#0B3CFF]/10 rounded-full blur-3xl" />
+
         <div className="relative mx-auto max-w-3xl text-center">
           <AnimatedSection>
             <motion.h2
               variants={fadeInUp}
-              className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-gray-900"
+              className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#111] mb-4 leading-tight"
             >
-              {t(lang, 'cta_title_prefix')}
-              <span className="relative">
-                <span className="relative z-10">{t(lang, 'cta_title_highlight')}</span>
-                <span className="absolute bottom-1 left-0 right-0 h-3 bg-orange-200/60 -z-0 rounded-sm" />
-              </span>
+              {t(lang, 'v2_cta_title')}
             </motion.h2>
 
             <motion.p
               variants={fadeInUp}
-              className="text-lg text-gray-500 mb-12 max-w-xl mx-auto leading-relaxed"
+              className="text-xl text-[#6C5CE7] font-bold mb-10"
             >
-              {t(lang, 'cta_subtitle')}
+              → {t(lang, 'v2_cta_subtitle')}
             </motion.p>
 
             <motion.div variants={fadeInUp} className="flex flex-col items-center gap-4">
               <Link
-                href="/formation/inscription"
-                onClick={() => trackCtaClick('landing formation', 'footer_cta')}
-                className="group inline-flex items-center justify-center rounded-full bg-gray-900 px-10 py-5 text-lg font-semibold text-white transition-all hover:bg-gray-800 hover:shadow-lg"
+                href="/formation/methode"
+                onClick={() => trackCtaClick('landing formation v2', 'footer_cta')}
+                className="group inline-flex items-center justify-center rounded-full bg-[#0B3CFF] px-12 py-5 text-xl font-bold text-white transition-all hover:bg-[#0933DD] shadow-xl shadow-[#0B3CFF]/30 hover:shadow-2xl hover:shadow-[#0B3CFF]/40 hover:scale-[1.02]"
               >
-                {t(lang, 'cta_button')}
+                {t(lang, 'v2_cta_button')}
                 <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
               </Link>
-              <p className="text-sm text-gray-400">
-                {t(lang, 'cta_social_prefix')}<span className="text-gray-600 font-semibold">1 128</span>{t(lang, 'cta_social_suffix')}
+              <p className="text-sm text-[#333]/60 font-medium">
+                {t(lang, 'v2_cta_social')}
               </p>
             </motion.div>
           </AnimatedSection>
@@ -645,14 +414,14 @@ export default function Formation() {
       </section>
 
       {/* ─── FOOTER ─── */}
-      <footer className="border-t border-gray-100 bg-white py-10 px-6">
+      <footer className="border-t border-gray-200/60 bg-white py-10 px-6">
         <div className="mx-auto max-w-4xl">
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-gray-400">
-            <a href="mailto:contact@iaco.app" className="hover:text-gray-900 transition-colors">{t(lang, 'footer_contact')}</a>
-            <span className="hover:text-gray-900 transition-colors cursor-default">{t(lang, 'footer_legal')}</span>
-            <span className="hover:text-gray-900 transition-colors cursor-default">{t(lang, 'footer_terms')}</span>
-            <span className="hover:text-gray-900 transition-colors cursor-default">{t(lang, 'footer_privacy')}</span>
-            <span className="hover:text-gray-900 transition-colors cursor-default">{t(lang, 'footer_cookies')}</span>
+            <a href="mailto:contact@iaco.app" className="hover:text-[#111] transition-colors">{t(lang, 'footer_contact')}</a>
+            <span className="hover:text-[#111] transition-colors cursor-default">{t(lang, 'footer_legal')}</span>
+            <span className="hover:text-[#111] transition-colors cursor-default">{t(lang, 'footer_terms')}</span>
+            <span className="hover:text-[#111] transition-colors cursor-default">{t(lang, 'footer_privacy')}</span>
+            <span className="hover:text-[#111] transition-colors cursor-default">{t(lang, 'footer_cookies')}</span>
           </div>
         </div>
       </footer>

@@ -26,7 +26,7 @@ export default function Inscription() {
 
         <div className="bg-white p-12 rounded-lg shadow-lg border border-gray-100">
           <div className="mb-6">
-            <Rocket className="w-16 h-16 text-orange-500 mx-auto mb-4" />
+            <Rocket className="w-16 h-16 text-[#0B3CFF] mx-auto mb-4" />
           </div>
 
           <h1 className="text-4xl font-bold mb-4 text-gray-900">
@@ -46,14 +46,14 @@ export default function Inscription() {
 
           <Link
             href="/formation"
-            className="inline-flex items-center justify-center rounded-full bg-orange-500 px-8 py-4 text-lg font-semibold text-white shadow-lg transition hover:bg-orange-600 whitespace-nowrap"
+            className="inline-flex items-center justify-center rounded-full bg-[#0B3CFF] px-8 py-4 text-lg font-semibold text-white shadow-lg transition hover:bg-[#0933DD] whitespace-nowrap"
           >
             {t(lang, 'inscription_back_landing')}
           </Link>
         </div>
 
         <p className="text-gray-500 text-sm mt-8">
-          {t(lang, 'inscription_status')}<span className="font-semibold text-orange-600">{t(lang, 'inscription_status_value')}</span>
+          {t(lang, 'inscription_status')}<span className="font-semibold text-[#0B3CFF]">{t(lang, 'inscription_status_value')}</span>
         </p>
       </div>
     </div>

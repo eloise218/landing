@@ -10,16 +10,8 @@ export function middleware(request: NextRequest) {
   const xForwardedHost = request.headers.get('x-forwarded-host');
   const hostHeader = request.headers.get('host');
   const host = xForwardedHost || hostHeader || '';
-  const hostname = host.split(':')[0]; // remove port if present
+  const hostname = host.split(':')[0];
 
-  // Debug logging - remove after fixing
-  console.log('[middleware] x-forwarded-host:', xForwardedHost);
-  console.log('[middleware] host:', hostHeader);
-  console.log('[middleware] resolved hostname:', hostname);
-  console.log('[middleware] pathname:', request.nextUrl.pathname);
-
-  // Extract subdomain: e.g. "problemsolver" from "problemsolver.iaco.app"
-  // Also works with "problemsolver.localhost" for local dev
   const baseDomains = ['iaco.app', 'localhost'];
   let subdomain: string | null = null;
 
@@ -30,7 +22,14 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  console.log('[middleware] subdomain:', subdomain);
+  if (!subdomain && (request.nextUrl.pathname === '/' || request.nextUrl.pathname === '')) {
+    const authCookie = request.cookies.get('iaco_auth')?.value;
+    if (authCookie !== process.env.ADMIN_PASSWORD) {
+      const loginUrl = request.nextUrl.clone();
+      loginUrl.pathname = '/login';
+      return NextResponse.redirect(loginUrl);
+    }
+  }
 
   if (!subdomain) return NextResponse.next();
 
@@ -39,10 +38,8 @@ export function middleware(request: NextRequest) {
 
   const url = request.nextUrl.clone();
 
-  // Only rewrite if we're on the root path (to avoid rewriting assets, etc.)
   if (url.pathname === '/' || url.pathname === '') {
     url.pathname = targetPath;
-    console.log('[middleware] rewriting to:', targetPath);
     return NextResponse.rewrite(url);
   }
 
@@ -51,7 +48,6 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    // Match all paths except static files and internal Next.js paths
     '/((?!_next/static|_next/image|favicon.ico|icon.svg).*)',
   ],
 };
