@@ -113,8 +113,8 @@ const translations = {
     fr: 'On te montre la réalité du marché.',
   },
   solution_subtitle: {
-    en: 'ProblemFinder automatically analyzes frustrations expressed by real users on:',
-    fr: 'ProblemFinder analyse automatiquement les frustrations exprimées par de vrais utilisateurs sur :',
+    en: 'ProblemSolver automatically analyzes frustrations expressed by real users on:',
+    fr: 'ProblemSolver analyse automatiquement les frustrations exprimées par de vrais utilisateurs sur :',
   },
   solution_forums: {
     en: 'Forums',
@@ -431,8 +431,8 @@ const translations = {
     fr: 'Qui suis-je ?',
   },
   faq_a1: {
-    en: 'For my first company, I spent 6 months building a product without ever talking to real users. Market research made me believe I would find customers… but in the end I had to shut it down. That\u2019s when I realized the real problem: before building anything, you need a tool that actually validates your idea — by listening to real frustrations from real people. That\u2019s why I built ProblemFinder.',
-    fr: 'Pour ma première entreprise, j\u2019ai passé 6 mois à créer un produit sans jamais parler à de vrais utilisateurs. Les études de marché me faisaient croire que j\u2019allais avoir des clients… mais au final j\u2019ai dû tout arrêter. C\u2019est là que j\u2019ai compris le vrai problème : avant de créer quoi que ce soit, il faut un outil qui permette vraiment de valider son idée — en écoutant les frustrations réelles des vraies personnes. C\u2019est pour ça que j\u2019ai construit ProblemFinder.',
+    en: 'For my first company, I spent 6 months building a product without ever talking to real users. Market research made me believe I would find customers… but in the end I had to shut it down. That\u2019s when I realized the real problem: before building anything, you need a tool that actually validates your idea — by listening to real frustrations from real people. That\u2019s why I built ProblemSolver.',
+    fr: 'Pour ma première entreprise, j\u2019ai passé 6 mois à créer un produit sans jamais parler à de vrais utilisateurs. Les études de marché me faisaient croire que j\u2019allais avoir des clients… mais au final j\u2019ai dû tout arrêter. C\u2019est là que j\u2019ai compris le vrai problème : avant de créer quoi que ce soit, il faut un outil qui permette vraiment de valider son idée — en écoutant les frustrations réelles des vraies personnes. C\u2019est pour ça que j\u2019ai construit ProblemSolver.',
   },
 
   // ─── CTA ──────────────────────────────────────────────
@@ -459,8 +459,8 @@ const translations = {
     fr: 'Merci pour ta précommande !',
   },
   thanks_subtitle: {
-    en: 'Your spot is reserved. You\u2019re among the very first to support ProblemFinder.',
-    fr: 'Ta place est réservée. Tu fais partie des tout premiers à soutenir ProblemFinder.',
+    en: 'Your spot is reserved. You\u2019re among the very first to support ProblemSolver.',
+    fr: 'Ta place est réservée. Tu fais partie des tout premiers à soutenir ProblemSolver.',
   },
   thanks_next_title: {
     en: 'What happens next?',
@@ -497,8 +497,8 @@ const translations = {
 
   // ─── FOOTER ───────────────────────────────────────────
   footer_copy: {
-    en: 'ProblemFinder \u00A9 2026 \u2014 Large-scale user frustration analysis',
-    fr: 'ProblemFinder \u00A9 2026 \u2014 Analyse des frustrations utilisateurs à grande échelle',
+    en: 'ProblemSolver \u00A9 2026 \u2014 Large-scale user frustration analysis',
+    fr: 'ProblemSolver \u00A9 2026 \u2014 Analyse des frustrations utilisateurs à grande échelle',
   },
   footer_contact: {
     en: 'Contact',

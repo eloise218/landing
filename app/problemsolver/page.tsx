@@ -98,7 +98,7 @@ function AnimatedCounter({ target, suffix = '', locale = 'en-US' }: { target: nu
 
 export default function ProblemSolverLanding() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [lang, setLang] = useState<Lang>('fr');
+  const [lang, setLang] = useState<Lang>('en');
   const numberLocale = lang === 'fr' ? 'fr-FR' : 'en-US';
 
   return (
@@ -110,7 +110,7 @@ export default function ProblemSolverLanding() {
             <Target className="h-6 w-6 text-blue-600" />
             <span className="text-lg font-bold">
               <span className="text-slate-900">Problem</span>
-              <span className="text-blue-600">Finder</span>
+              <span className="text-blue-600">Solver</span>
             </span>
           </Link>
 
@@ -244,7 +244,7 @@ export default function ProblemSolverLanding() {
                   <div className="w-2.5 h-2.5 rounded-full bg-slate-300" />
                   <div className="w-2.5 h-2.5 rounded-full bg-slate-300" />
                   <div className="ml-2 flex-1 h-5 bg-slate-200 rounded text-[10px] text-slate-400 flex items-center px-2">
-                    problemfinder.app/rapport
+                    problemsolver.app/rapport
                   </div>
                 </div>
 

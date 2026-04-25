@@ -17,7 +17,7 @@ export default function Inscription() {
         {/* Card */}
         <div className="bg-white border border-slate-200 rounded-2xl p-10 space-y-4">
           <h1 className="text-2xl font-bold text-slate-900">
-            ProblemFinder is launching soon.
+            ProblemSolver is launching soon.
           </h1>
           <p className="text-slate-600">
             We are finalizing the last details before opening.

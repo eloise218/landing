@@ -10,7 +10,7 @@ import { t, type Lang } from '../translations';
 
 function ThanksContent() {
   const searchParams = useSearchParams();
-  const [lang, setLang] = useState<Lang>('fr');
+  const [lang, setLang] = useState<Lang>('en');
 
   useEffect(() => {
     const sessionId = searchParams.get('session_id') ?? `manual-${Date.now()}`;
@@ -23,8 +23,8 @@ function ThanksContent() {
       transactionId: sessionId,
       value: 9,
       currency: 'EUR',
-      itemId: 'problemfinder-preorder',
-      itemName: 'ProblemFinder Pre-order',
+      itemId: 'problemsolver-preorder',
+      itemName: 'ProblemSolver Pre-order',
     });
 
     window.localStorage.setItem(storageKey, '1');
