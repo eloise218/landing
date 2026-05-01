@@ -4,6 +4,7 @@ const subdomainRoutes: Record<string, string> = {
   'problemsolver': '/problemsolver',
   'facture-electronique': '/facture-electronique',
   'formation-vibe-coding': '/formation',
+  'tractionlab': '/tractionlab',
 };
 
 export function middleware(request: NextRequest) {

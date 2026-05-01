@@ -30,6 +30,13 @@ export default function Home() {
           >
             🧾 Facture Électronique
           </Link>
+
+          <Link
+            href="/tractionlab"
+            className="px-8 py-4 bg-violet-600 text-white rounded-lg font-semibold hover:bg-violet-700 transition-colors"
+          >
+            🚀 Tractionlab
+          </Link>
         </div>
 
         <p className="text-sm text-gray-500 mt-12">
